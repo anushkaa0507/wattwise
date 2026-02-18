@@ -1,51 +1,63 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { io } from "socket.io-client";
+import { useEffect, useState, useRef } from "react";
+import { fetchDevices, addDevice, toggleDevice } from "./services/deviceApi";
+import DeviceCard from "./components/DeviceCard";
+// import "./App.css";
 
-const socket = io("http://localhost:5000");
-
-export default function App() {
+function App() {
   const [devices, setDevices] = useState([]);
   const [name, setName] = useState("");
   const [watt, setWatt] = useState("");
-
-  const fetchDevices = async () => {
-    const res = await axios.get("http://localhost:5000/devices");
-    setDevices(res.data);
+  const intervalRef = useRef(null);
+  const loadDevices = async () => {
+    const data = await fetchDevices();
+    setDevices(data);
   };
+useEffect(() => {
+  loadDevices();
+}, []);
+// Start polling ONLY if any device is ON
+useEffect(() => {
+  const anyDeviceOn = devices.some((d) => d.isOn);
 
-  useEffect(() => {
-    fetchDevices();
+  // If device turned ON → start polling
+  if (anyDeviceOn && !intervalRef.current) {
+    intervalRef.current = setInterval(() => {
+      loadDevices();
+    }, 1000);
+  }
 
-    socket.on("energy-update", (data) => {
-      setDevices(data);
-    });
+  // If all devices OFF → stop polling
+  if (!anyDeviceOn && intervalRef.current) {
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+  }
 
-    return () => socket.disconnect();
-  }, []);
+  // Cleanup when component unmounts
+  return () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+  };
+}, [devices]);
 
-  const addDevice = async () => {
-    await axios.post("http://localhost:5000/add-device", {
-      name,
-      watt: Number(watt)
-    });
-
+  const handleAdd = async () => {
+    if (!name || !watt) return;
+    await addDevice(name, Number(watt));
     setName("");
     setWatt("");
-    fetchDevices();
+    loadDevices();
   };
-
-  const toggleDevice = async (id) => {
-    await axios.post(`http://localhost:5000/toggle/${id}`);
+  const handleToggle = async (id) => {
+    await toggleDevice(id);
+    loadDevices();
   };
-
   return (
-    <div style={{ padding: 30 }}>
-      <h1>⚡ Wattwise Energy Calculator</h1>
+    <div className="container">
+      <h1> WattWise Energy Calculator</h1>
 
-      <div style={{ marginBottom: 20 }}>
+      <div className="add-form">
         <input
-          placeholder="Device Name (Fan, TV...)"
+          placeholder="Device Name (Fan, TV, Light...)"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
@@ -56,24 +68,20 @@ export default function App() {
           onChange={(e) => setWatt(e.target.value)}
         />
 
-        <button onClick={addDevice}>Add Device</button>
+        <button onClick={handleAdd}>Add Device</button>
       </div>
 
-      {devices.map((d) => (
-        <div key={d.id} style={{
-          border: "1px solid #ccc",
-          padding: 20,
-          marginBottom: 10
-        }}>
-          <h3>{d.name}</h3>
-          <p>{d.watt} W</p>
-          <p>Units: {(d.units + (d.liveUnits || 0)).toFixed(4)} kWh</p>
-
-          <button onClick={() => toggleDevice(d.id)}>
-            {d.isOn ? "Turn OFF" : "Turn ON"}
-          </button>
-        </div>
-      ))}
+      <div className="device-grid">
+        {devices.map((device) => (
+          <DeviceCard
+            key={device.id}
+            device={device}
+            onToggle={handleToggle}
+          />
+        ))}
+      </div>
     </div>
   );
 }
+
+export default App;
