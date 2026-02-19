@@ -2,8 +2,12 @@ import { useEffect, useState, useRef } from "react";
 import { fetchDevices, addDevice, toggleDevice } from "./services/deviceApi";
 import DeviceCard from "./components/DeviceCard";
 // import "./App.css";
+import Hero from "./Hero";
+import Login from "./Login";
 
 function App() {
+  const [page, setPage] = useState("hero");
+const token = localStorage.getItem("token");
   const [devices, setDevices] = useState([]);
   const [name, setName] = useState("");
   const [watt, setWatt] = useState("");
@@ -51,6 +55,11 @@ useEffect(() => {
     await toggleDevice(id);
     loadDevices();
   };
+  if (!token) {
+  if (page === "hero") return <Hero goLogin={() => setPage("login")} />;
+  if (page === "login") return <Login onSuccess={() => window.location.reload()} />;
+}
+
   return (
     <div className="container">
       <h1> WattWise Energy Calculator</h1>
