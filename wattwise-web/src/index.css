@@ -16,13 +16,8 @@
   background-size: 30px 30px;
 }
 
-/* Ensure to import Google Fonts and Material Icons in your main app if not already */
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 
-/* Tailwind config is handled via script or your build process, but colors are defined as:
---primary: #ee9d2b;
---background-light: #f8f7f6;
---background-dark: #221a10;
-*/
