@@ -1,89 +1,28 @@
-body {
-  margin: 0;
-  overflow: hidden;
-  font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: white;
+/* index.css */
+
+/* Custom styles from the HTML */
+.glass-nav {
+  background: rgba(34, 26, 16, 0.7);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(238, 157, 43, 0.1);
 }
 
-.hero {
-  position: relative;
-  height: 100vh;
-  width: 100%;
-  overflow: hidden;
+.dashboard-glow {
+  box-shadow: 0 0 50px -12px rgba(238, 157, 43, 0.3);
 }
 
-/* Background Layer */
-#creature-wrapper {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 0;
+.bg-dots {
+  background-image: radial-gradient(rgba(238, 157, 43, 0.1) 1px, transparent 0);
+  background-size: 30px 30px;
 }
 
-#creature {
-  font-size: .2vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 150em;
-  height: 150em;
-  flex-wrap: wrap;
-}
+/* Ensure to import Google Fonts and Material Icons in your main app if not already */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 
-#creature div {
-  width: 4em;
-  height: 4em;
-  margin: 3em;
-  border-radius: 2em;
-  background: hsl(4, 70%, 60%);
-  mix-blend-mode: plus-lighter;
-}
-
-/* Foreground Content */
-.hero-content {
-  position: relative;
-  z-index: 2;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.hero-logo {
-  width: 180px;
-  color: #38bdf8;
-  margin-bottom: 20px;
-}
-
-.hero h1 {
-  font-size: 3rem;
-  margin-bottom: 20px;
-}
-
-.hero p {
-  max-width: 600px;
-  opacity: 0.8;
-  margin-bottom: 30px;
-  font-size: 1.2rem;
-}
-
-.hero button {
-  padding: 14px 28px;
-  border-radius: 8px;
-  border: none;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  background: linear-gradient(90deg, #38bdf8, #6366f1);
-  color: white;
-  transition: 0.3s;
-}
-
-.hero button:hover {
-  transform: scale(1.05);
-}
+/* Tailwind config is handled via script or your build process, but colors are defined as:
+--primary: #ee9d2b;
+--background-light: #f8f7f6;
+--background-dark: #221a10;
+*/
