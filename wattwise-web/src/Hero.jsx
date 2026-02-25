@@ -235,7 +235,6 @@ export default function Hero({ goLogin }) {
           </div>
         </section>
 
-        {/* Image Gallery Feature Section with Sliding Animation */}
         <section className="max-w-7xl mx-auto px-6 py-24 overflow-hidden">
           <motion.div 
             className="flex"
@@ -244,7 +243,7 @@ export default function Hero({ goLogin }) {
               x: {
                 repeat: Infinity,
                 repeatType: "loop",
-                duration: 20, // Adjust speed
+                duration: 20, 
                 ease: "linear",
               },
             }}
