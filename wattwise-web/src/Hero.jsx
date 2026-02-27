@@ -58,19 +58,16 @@ export default function Hero({ goLogin }) {
     },
   ];
 
-  // Duplicate items for infinite loop effect
   const extendedGallery = [...galleryItems, ...galleryItems, ...galleryItems];
 
   return (
     <div className="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen overflow-x-hidden">
       <Header goLogin={goLogin} />
       <main className="relative pt-20">
-        {/* Background Elements */}
         <div className="absolute inset-0 bg-dots -z-10"></div>
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] -z-10"></div>
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px] -z-10"></div>
 
-        {/* Hero Section */}
         <section className="max-w-7xl mx-auto px-6 pt-16 lg:pt-24 flex flex-col items-center text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary text-xs font-bold mb-6">
             <span className="relative flex h-2 w-2">
@@ -98,7 +95,6 @@ export default function Hero({ goLogin }) {
             </button>
           </div>
 
-          {/* Dashboard Preview Mockup */}
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -106,7 +102,6 @@ export default function Hero({ goLogin }) {
             className="relative w-full max-w-5xl mx-auto mb-24"
           >
             <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 md:p-8 dashboard-glow overflow-hidden">
-              {/* Top Bar of Dashboard */}
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                 <div className="text-left">
                   <h3 className="text-xl font-bold">Live Dashboard</h3>
@@ -123,7 +118,6 @@ export default function Hero({ goLogin }) {
                 </div>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Left Panel: Device Controls */}
                 <div className="lg:col-span-1 flex flex-col gap-4">
                   <div className="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 p-4 rounded-xl flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -168,7 +162,6 @@ export default function Hero({ goLogin }) {
                     </div>
                   </div>
                 </div>
-                {/* Right Panel: Graph */}
                 <div className="lg:col-span-2 bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 p-6 rounded-xl flex flex-col justify-between">
                   <div className="flex justify-between items-center mb-6">
                     <span className="text-sm font-bold uppercase tracking-wider text-slate-500">Consumption History (kWh)</span>
@@ -205,7 +198,6 @@ export default function Hero({ goLogin }) {
           </motion.div>
         </section>
 
-        {/* Brand Strip / Gallery */}
         <section className="max-w-7xl mx-auto px-6 py-12 border-t border-slate-200 dark:border-slate-800/50">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center justify-items-center opacity-50 grayscale hover:grayscale-0 transition-all">
             <div className="flex flex-col items-center gap-2">
@@ -238,7 +230,7 @@ export default function Hero({ goLogin }) {
         <section className="max-w-7xl mx-auto px-6 py-24 overflow-hidden">
           <motion.div 
             className="flex"
-            animate={{ x: [0, -100 * galleryItems.length + "%"] }} // Slide to left infinitely
+            animate={{ x: [0, -100 * galleryItems.length + "%"] }} 
             transition={{
               x: {
                 repeat: Infinity,
