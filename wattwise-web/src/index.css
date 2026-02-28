@@ -1,37 +1,68 @@
 @import "tailwindcss";
-
-/* ===== Theme (Replaces tailwind.config.js) ===== */
-@theme {
-  --color-primary: #ee9d2b;
-  --color-background-light: #f8f7f6;
-  --color-background-dark: #221a10;
-
-  --font-display: "Inter", sans-serif;
-
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
+:root {
+  --sky-blue: #e0f2fe;
+  --lavender-pastel: #f3e8ff;
+  --mint-green: #dcfce7;
+  --soft-pink: #fce7f3;
+  --pastel-coral: #fda4af;
+  --deep-navy: #1e293b;
+  --glass-white: rgba(255,255,255,0.4);
+  --pale-yellow: #fef9c3;
+  --baby-blue: #dbeafe;
 }
 
-/* ===== Global Styles ===== */
-body {
-  font-family: var(--font-display);
-  background: var(--color-background-light);
+.bg-pastel-gradient {
+  background: linear-gradient(135deg,var(--sky-blue),var(--lavender-pastel));
 }
 
-/* Dark mode */
-.dark body {
-  background: var(--color-background-dark);
-}
-
-/* ===== Custom Utilities from your HTML ===== */
 .glass-nav {
-  background: rgba(34, 26, 16, 0.7);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(238, 157, 43, 0.1);
+  background: rgba(255,255,255,.2);
+  backdrop-filter: blur(16px);
+  border-bottom:1px solid rgba(255,255,255,.3);
+}
+
+.frosted-btn {
+  background: var(--glass-white);
+  backdrop-filter: blur(8px);
+  border:1px solid rgba(255,255,255,.5);
+  transition:.3s;
 }
 
 .dashboard-glow {
-  box-shadow: 0 0 50px -12px rgba(238, 157, 43, 0.3);
+  box-shadow:0 30px 60px -12px rgba(148,163,184,.15);
+}
+
+.pastel-line-gradient {
+  background: linear-gradient(90deg,#93c5fd,#a7f3d0,#fde68a,#fda4af);
+  height:4px;
+  border-radius:999px;
+}
+
+
+body {
+  font-family: var(--font-display);
+   background: linear-gradient(
+    135deg,
+    #e0f2fe 0%,
+    #f3e8ff 100%
+  );
+
+  min-height: 100vh;
+}
+
+
+
+
+.dashboard-glow {
+  box-shadow: 0 30px 60px -12px rgba(148, 163, 184, 0.15);
+}
+
+
+
+
+.frosted-btn:hover {
+  background: var(--color-mint);
+  border-color: #86efac;
 }
 
 .bg-dots {
