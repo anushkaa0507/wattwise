@@ -1,8 +1,6 @@
-// Hero.jsx or Hero.tsx
 "use client";
 import { motion } from "framer-motion";
 import { useState } from "react";
-// Reusable Header Component
 export function Header({ goLogin }) {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-nav">
@@ -61,7 +59,6 @@ export function Header({ goLogin }) {
 }
 
 export default function Hero({ goLogin }) {
-  // For sliding animation in the gallery, we'll use Framer Motion to create an infinite slider
   const galleryItems = [
     {
       title: "Solar Integration",
@@ -169,8 +166,6 @@ text-[#1e293b] shadow-sm backdrop-blur-sm"
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                {/* LEFT DEVICE TOGGLES */}
-
                 <div className="lg:col-span-4 flex flex-col gap-4">
                   {devices.map((item, i) => (
                     <div
@@ -236,7 +231,6 @@ relative overflow-hidden p-5 rounded-2xl flex items-center justify-between  tran
                   ))}
                 </div>
 
-                {/* RIGHT GRAPH */}
                 <div className="lg:col-span-8 bg-white/40 border border-white/60 p-8 rounded-[2.5rem] flex flex-col">
                   <div className="h-60 flex items-end gap-3">
                     <div className="flex-1 bg-blue-100/50 h-[30%] rounded-t-xl"></div>
