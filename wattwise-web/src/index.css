@@ -1,4 +1,29 @@
+@import "tailwindcss";
 
+/* ===== Theme (Replaces tailwind.config.js) ===== */
+@theme {
+  --color-primary: #ee9d2b;
+  --color-background-light: #f8f7f6;
+  --color-background-dark: #221a10;
+
+  --font-display: "Inter", sans-serif;
+
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+}
+
+/* ===== Global Styles ===== */
+body {
+  font-family: var(--font-display);
+  background: var(--color-background-light);
+}
+
+/* Dark mode */
+.dark body {
+  background: var(--color-background-dark);
+}
+
+/* ===== Custom Utilities from your HTML ===== */
 .glass-nav {
   background: rgba(34, 26, 16, 0.7);
   backdrop-filter: blur(12px);
@@ -13,9 +38,3 @@
   background-image: radial-gradient(rgba(238, 157, 43, 0.1) 1px, transparent 0);
   background-size: 30px 30px;
 }
-
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
-
