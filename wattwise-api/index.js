@@ -30,28 +30,38 @@ const io = new Server(server, {
   },
 });
 
-let devices = {};
-
+// Store devices per user
+let userDevices = {};
 
 app.post("/add-device", requireAuth(), (req, res) => {
+  const userId = req.auth.userId;
   const { name, watt } = req.body;
   const id = Date.now().toString();
 
-  devices[id] = {
+  if (!userDevices[userId]) {
+    userDevices[userId] = [];
+  }
+
+  const device = {
     id,
     name,
     watt,
     isOn: false,
     startTime: null,
     units: 0,
+    liveUnits: 0,
   };
 
-  res.json(devices[id]);
+  userDevices[userId].push(device);
+
+  res.json(device);
 });
 
-// Toggle device
 app.post("/toggle/:id", requireAuth(), (req, res) => {
-  const device = devices[req.params.id];
+  const userId = req.auth.userId;
+  const devices = userDevices[userId] || [];
+
+  const device = devices.find(d => d.id === req.params.id);
   if (!device) return res.status(404).send("Not found");
 
   device.isOn = !device.isOn;
@@ -61,29 +71,45 @@ app.post("/toggle/:id", requireAuth(), (req, res) => {
   } else {
     const hours = (Date.now() - device.startTime) / 3600000;
     device.units += (device.watt * hours) / 1000;
+    device.startTime = null;
+    device.liveUnits = 0;
   }
 
   res.json(device);
 });
-
-// Get devices
 app.get("/devices", requireAuth(), (req, res) => {
-  res.json(Object.values(devices));
+  const userId = req.auth.userId;
+  res.json(userDevices[userId] || []);
 });
 
 //
 // Live energy calculation (Socket.IO)
 //
 setInterval(() => {
-  Object.values(devices).forEach((device) => {
-    if (device.isOn) {
-      const hours = (Date.now() - device.startTime) / 3600000;
-      device.liveUnits = (device.watt * hours) / 1000;
-    }
+  Object.keys(userDevices).forEach((userId) => {
+    const devices = userDevices[userId];
+
+    devices.forEach((device) => {
+      if (device.isOn && device.startTime) {
+        const hours = (Date.now() - device.startTime) / 3600000;
+        device.liveUnits = (device.watt * hours) / 1000;
+      }
+    });
+
+    io.to(userId).emit("energy-update", devices);
+  });
+}, 1000);
+io.on("connection", (socket) => {
+  console.log("User connected");
+
+  socket.on("join", (userId) => {
+    socket.join(userId);
   });
 
-  io.emit("energy-update", Object.values(devices));
-}, 1000);
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+  });
+});
 const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () =>
