@@ -7,12 +7,9 @@ const cors = require("cors");
 const { clerkMiddleware, requireAuth } = require("@clerk/express");
 
 const app = express();
-// app.use(cors({
-//   origin: process.env.FRONTEND_URL,
-//   credentials: true
-// }));
+
 app.use(cors({
-  origin: "*",
+  origin: "https://wattwise-plum.vercel.app",
   credentials: true
 }));
 app.use(express.json());
@@ -28,7 +25,7 @@ const server = http.createServer(app);
 // });
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: "https://wattwise-plum.vercel.app",
     methods: ["GET", "POST"]
   },
 });
