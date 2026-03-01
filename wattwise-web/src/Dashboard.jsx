@@ -1,7 +1,10 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useAuth, UserButton } from "@clerk/clerk-react";
+import { io } from "socket.io-client";
 import { fetchDevices, addDevice, toggleDevice } from "./services/deviceApi";
 import DeviceCard from "./components/DeviceCard";
+
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 export default function Dashboard() {
   const { getToken } = useAuth();
@@ -10,79 +13,63 @@ export default function Dashboard() {
   const [name, setName] = useState("");
   const [watt, setWatt] = useState("");
 
-  const intervalRef = useRef(null);
-
-  // 🔹 Load Devices From Backend
-  const loadDevices = async () => {
-    try {
-      const token = await getToken(); // Clerk session token
+  // 🔹 Initial Load
+  useEffect(() => {
+    const load = async () => {
+      const token = await getToken();
       const data = await fetchDevices(token);
       setDevices(data);
-    } catch (err) {
-      console.error("Failed to load devices", err);
-    }
-  };
-
-  // Initial Load
-  useEffect(() => {
-    loadDevices();
+    };
+    load();
   }, []);
 
-  // 🔹 Smart Polling (only when a device is ON)
-  useEffect(() => {
-    const anyDeviceOn = devices.some((d) => d.isOn);
+useEffect(() => {
+  const connectSocket = async () => {
+    const token = await getToken();
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    const userId = payload.sub;
 
-    if (anyDeviceOn && !intervalRef.current) {
-      intervalRef.current = setInterval(loadDevices, 1000);
-    }
+    const socket = io(import.meta.env.VITE_API_URL, {
+      transports: ["websocket"],
+    });
 
-    if (!anyDeviceOn && intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
+    socket.emit("join", userId);
 
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [devices]);
+    socket.on("energy-update", (updatedDevices) => {
+      setDevices(updatedDevices);
+    });
+
+    return () => socket.disconnect();
+  };
+
+  connectSocket();
+}, []);
 
   // 🔹 Add Device
   const handleAdd = async () => {
     if (!name || !watt) return;
 
-    try {
-      const token = await getToken();
-      await addDevice(name, Number(watt), token);
+    const token = await getToken();
+    await addDevice(name, Number(watt), token);
 
-      setName("");
-      setWatt("");
-      loadDevices();
-    } catch (err) {
-      console.error("Failed to add device", err);
-    }
+    setName("");
+    setWatt("");
   };
 
   // 🔹 Toggle Device
   const handleToggle = async (id) => {
-    try {
-      const token = await getToken();
-      await toggleDevice(id, token);
-      loadDevices();
-    } catch (err) {
-      console.error("Failed to toggle device", err);
-    }
+    const token = await getToken();
+    await toggleDevice(id, token);
   };
 
   return (
     <div className="container">
-      {/* Top Right User Profile */}
       <div style={{ position: "absolute", top: 20, right: 20 }}>
         <UserButton afterSignOutUrl="/" />
       </div>
 
       <h1>⚡ WattWise Energy Calculator</h1>
 
-      {/* Add Device Form */}
       <div className="add-form">
         <input
           placeholder="Device Name (Fan, TV, Light...)"
@@ -99,7 +86,6 @@ export default function Dashboard() {
         <button onClick={handleAdd}>Add Device</button>
       </div>
 
-      {/* Devices Grid */}
       <div className="device-grid">
         {devices.map((device) => (
           <DeviceCard
