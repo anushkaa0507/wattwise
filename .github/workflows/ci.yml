@@ -1,4 +1,4 @@
-name: Wattwise CI Pipeline
+name: Wattwise CI + Docker Build
 
 on:
   push:
@@ -9,34 +9,22 @@ on:
       - main
 
 jobs:
-  backend-build:
+  docker-build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: wattwise-api
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Backend Dependencies
-        run: npm install
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Check Backend Starts
-        run: node -e "require('./index.js')"
+      # Backend Docker Build
+      - name: Build Backend Docker Image
+        run: |
+          docker build -t wattwise-backend ./wattwise-api
 
-  frontend-build:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: wattwise-web
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Install Frontend Dependencies
-        run: npm install
-
-      - name: Build Frontend
-        run: npm run build
+      # Frontend Docker Build
+      - name: Build Frontend Docker Image
+        run: |
+          docker build -t wattwise-frontend ./wattwise-web
