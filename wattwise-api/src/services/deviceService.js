@@ -1,32 +1,31 @@
-const devices = require("../data/devices");
 const { createDevice } = require("../models/deviceModel");
 
-function addDevice(name, watt) {
+// store devices per user (important for SaaS architecture)
+const userDevices = {};
+
+function addDevice(userId, name, watt) {
+  if (!userDevices[userId]) userDevices[userId] = [];
+
   const device = createDevice(name, watt);
-  devices.push(device);
+  userDevices[userId].push(device);
+
   return device;
 }
 
-function toggleDevice(id) {
-  const device = devices.find(d => d.id === id);
+function toggleDevice(userId, id) {
+  const devices = userDevices[userId] || [];
 
+  const device = devices.find((d) => d.id === id);
   if (!device) return null;
 
-  if (!device.isOn) {
-    device.isOn = true;
-    device.startTime = Date.now();
-  } else {
-    const duration = (Date.now() - device.startTime) / 3600000;
-    device.units += (device.watt * duration) / 1000;
-    device.isOn = false;
-    device.startTime = null;
-  }
+  device.isOn = !device.isOn;
+  device.startTime = device.isOn ? Date.now() : null;
 
   return device;
 }
 
-function getDevices() {
-  return devices;
+function getDevices(userId) {
+  return userDevices[userId] || [];
 }
 
 module.exports = { addDevice, toggleDevice, getDevices };
