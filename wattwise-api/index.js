@@ -7,8 +7,12 @@ const cors = require("cors");
 const { clerkMiddleware, requireAuth } = require("@clerk/express");
 
 const app = express();
+// app.use(cors({
+//   origin: process.env.FRONTEND_URL,
+//   credentials: true
+// }));
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: "*",
   credentials: true
 }));
 app.use(express.json());
@@ -16,9 +20,15 @@ app.use(express.json());
 app.use(clerkMiddleware());
 
 const server = http.createServer(app);
+// const io = new Server(server, {
+//   cors: {
+//     origin: process.env.FRONTEND_URL,
+//     methods: ["GET", "POST"]
+//   },
+// });
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL,
+    origin: "*",
     methods: ["GET", "POST"]
   },
 });
