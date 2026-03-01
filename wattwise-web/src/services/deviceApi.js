@@ -1,27 +1,30 @@
 const BASE_URL = "http://localhost:5000";
-const getHeaders = () => ({
+
+const getHeaders = (token) => ({
   "Content-Type": "application/json",
-  Authorization: localStorage.getItem("token"),
+  Authorization: `Bearer ${token}`,
 });
 
-export async function fetchDevices() {
-  const res = await fetch(`${BASE_URL}/devices`, { headers: getHeaders() });
-  return res.json();
-}
-
-export async function addDevice(name, watt) {
-  const res = await fetch(`${BASE_URL}/add-device`, {
-    method: "POST",
-    headers: getHeaders(),
-    body: JSON.stringify({ name, watt })
+export async function fetchDevices(token) {
+  const res = await fetch(`${BASE_URL}/devices`, {
+    headers: getHeaders(token),
   });
   return res.json();
 }
 
-export async function toggleDevice(id) {
+export async function addDevice(name, watt, token) {
+  const res = await fetch(`${BASE_URL}/add-device`, {
+    method: "POST",
+    headers: getHeaders(token),
+    body: JSON.stringify({ name, watt }),
+  });
+  return res.json();
+}
+
+export async function toggleDevice(id, token) {
   const res = await fetch(`${BASE_URL}/toggle/${id}`, {
     method: "POST",
-    headers: getHeaders()
+    headers: getHeaders(token),
   });
   return res.json();
 }

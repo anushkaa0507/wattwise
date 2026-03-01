@@ -1,7 +1,13 @@
 "use client";
 import { motion } from "framer-motion";
 import { useState } from "react";
-export function Header({ goLogin }) {
+import {
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/clerk-react";
+export function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-nav">
       <nav className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
@@ -15,50 +21,55 @@ export function Header({ goLogin }) {
         </div>
         <div className="hidden md:flex items-center gap-8 text-sm font-medium">
           <a
-            className="frosted-btn text-slate-700 hover:bg-[var(--color-mint)] transition-colors"
+            className=" text-[1rem] hover:bg-[var(--color-mint)] transition-colors"
             href="#"
           >
             Features
           </a>
           <a
-            className="frosted-btn text-slate-700 hover:bg-[var(--color-mint)] transition-colors"
+            className=" text-[1rem] hover:bg-[var(--color-mint)] transition-colors"
             href="#"
           >
             Dashboard
           </a>
           <a
-            className="frosted-btn text-slate-700 hover:bg-[var(--color-mint)] transition-colors"
+            className=" text-[1rem] hover:bg-[var(--color-mint)] transition-colors"
             href="#"
           >
             Pricing
           </a>
           <a
-            className="frosted-btn text-slate-700 hover:bg-[var(--color-mint)] transition-colors"
+            className=" text-[1rem] hover:bg-[var(--color-mint)] transition-colors"
             href="#"
           >
             About
           </a>
         </div>
         <div className="flex items-center gap-4">
-          <button
-            onClick={goLogin}
-            className="px-5 py-2 text-sm font-medium frosted-btn text-slate-700 hover:bg-[var(--color-mint)] transition-colors"
-          >
-            Log In
-          </button>
-          <button
-            onClick={goLogin}
-            className="bg-pink-400 hover:bg-pink-500 text-white shadow-xl shadow-pink-200/50  px-6 py-2 rounded-lg font-bold text-sm transition-all"
-          >
-            Get Started
-          </button>
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="px-5 py-2 text-sm font-medium text-[1rem] hover:bg-[var(--color-mint)] transition-colors">
+                Log In
+              </button>
+            </SignInButton>
+          </SignedOut>
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="bg-pink-400 hover:bg-pink-500 text-white shadow-xl shadow-pink-200/50 px-6 py-2 rounded-lg font-bold text-sm transition-all">
+                Get Started
+              </button>
+            </SignInButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton afterSignOutUrl="/" />
+          </SignedIn>
         </div>
       </nav>
     </header>
   );
 }
 
-export default function Hero({ goLogin }) {
+export default function Hero() {
   const galleryItems = [
     {
       title: "Solar Integration",
@@ -107,8 +118,19 @@ export default function Hero({ goLogin }) {
   };
   return (
     <div className="font-display bg-pastel-gradient text-slate-800 min-h-screen overflow-x-hidden">
-      <Header goLogin={goLogin} />
+      <Header />
       <main className="relative pt-20">
+        <SignedIn>
+          <div className="fixed top-24 right-6 z-50">
+            <a
+              href="/"
+              className="bg-emerald-400 text-white px-6 py-3 rounded-xl font-bold shadow-lg"
+              onClick={() => window.location.reload()}
+            >
+              Enter Dashboard →
+            </a>
+          </div>
+        </SignedIn>
         <div className="absolute top-0 right-0 w-[500px] h-125 bg-pink-200/40 rounded-full blur-[120px] -z-10"></div>
         <div className="absolute bottom-0 left-0 w-[400px] h-100 bg-blue-200/40 rounded-full blur-[120px] -z-10"></div>{" "}
         <div className="absolute top-0 right-0 w-[500px] h-[500px]  rounded-full blur-[120px] -z-10"></div>
@@ -125,19 +147,22 @@ export default function Hero({ goLogin }) {
             {" "}
             Master Your <span className="text-primary">Energy</span> Consumption
           </h1>
-          <p className="text-lg md:text-xl text-slate-500 text-slate-400 max-w-2xl mb-10">
+          <p className="text-lg md:text-xl text-slate-500 text-slate-400 max-w-2xl p-6">
             Take control of your home’s efficiency with real-time monitoring,
             AI-driven insights, and seamless smart device automation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mb-20">
-            <button
-              onClick={goLogin}
-              className="bg-[var(--pastel-coral)] hover:bg-pink-400
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button
+                  className="bg-[var(--pastel-coral)] hover:bg-pink-400
 text-white px-10 py-4 rounded-2xl font-bold text-lg
 transition-all hover:scale-105 shadow-xl shadow-pink-200/50"
-            >
-              Start Saving Now
-            </button>
+                >
+                  Start Saving Now
+                </button>
+              </SignInButton>
+            </SignedOut>
             <button
               className="bg-white/80 border border-white/60 hover:border-white
 px-10 py-4 rounded-2xl font-bold text-lg
