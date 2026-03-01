@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import AuthModal from "./components/AuthModal";
 import { useState } from "react";
 import {
   SignInButton,
@@ -7,7 +8,7 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/clerk-react";
-export function Header() {
+export function Header({ openAuth }) {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-nav">
       <nav className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
@@ -46,20 +47,12 @@ export function Header() {
           </a>
         </div>
         <div className="flex items-center gap-4">
-          <SignedOut>
-            <SignInButton mode="modal">
-              <button className="px-5 py-2 text-sm font-medium text-[1rem] hover:bg-[var(--color-mint)] transition-colors">
-                Log In
-              </button>
-            </SignInButton>
-          </SignedOut>
-          <SignedOut>
-            <SignInButton mode="modal">
-              <button className="bg-pink-400 hover:bg-pink-500 text-white shadow-xl shadow-pink-200/50 px-6 py-2 rounded-lg font-bold text-sm transition-all">
-                Get Started
-              </button>
-            </SignInButton>
-          </SignedOut>
+          <button
+            onClick={openAuth}
+            className="bg-pink-400 hover:bg-pink-500 text-white shadow-xl shadow-pink-200/50 px-6 py-2 rounded-lg font-bold text-sm transition-all"
+          >
+            Get Started
+          </button>
           <SignedIn>
             <UserButton afterSignOutUrl="/" />
           </SignedIn>
@@ -87,7 +80,7 @@ export default function Hero() {
       img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCLO2n6pRYgeIe1q2wF2qY5azBO-4BO6tY5psZ2hXNVafmX8ZH55DpJfjatYFyIng4LXAIVGgXr8Ym7i7K2aoHcKt5O8NpiAquOQv6MWarrehC4P5NqktPcUd06awjYP5Z857xg6ItMD-SMprMRQUpMK1rbcMgVnX19uWWTTDhNvvCspuclYAqA8PN0iStTH0gTDLlsVJh7ohfJxaDJsSmvCxS0xmf5eJ6u-c4gQEs14qCnSg-tm-HdS50GvPYOFD0tXQjnpUXM2A",
     },
   ];
-
+  const [authOpen, setAuthOpen] = useState(false);
   const extendedGallery = [...galleryItems, ...galleryItems];
   const [devices, setDevices] = useState([
     {
@@ -118,7 +111,7 @@ export default function Hero() {
   };
   return (
     <div className="font-display bg-pastel-gradient text-slate-800 min-h-screen overflow-x-hidden">
-      <Header />
+      <Header openAuth={() => setAuthOpen(true)} />
       <main className="relative pt-20">
         <SignedIn>
           <div className="fixed top-24 right-6 z-50">
@@ -152,17 +145,14 @@ export default function Hero() {
             AI-driven insights, and seamless smart device automation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mb-20">
-            <SignedOut>
-              <SignInButton mode="modal">
-                <button
-                  className="bg-[var(--pastel-coral)] hover:bg-pink-400
-text-white px-10 py-4 rounded-2xl font-bold text-lg
-transition-all hover:scale-105 shadow-xl shadow-pink-200/50"
-                >
-                  Start Saving Now
-                </button>
-              </SignInButton>
-            </SignedOut>
+            <button
+              onClick={() => setAuthOpen(true)}
+              className="bg-[var(--pastel-coral)] hover:bg-pink-400
+  text-white px-10 py-4 rounded-2xl font-bold text-lg
+  transition-all hover:scale-105 shadow-xl shadow-pink-200/50"
+            >
+              Start Saving Now
+            </button>
             <button
               className="bg-white/80 border border-white/60 hover:border-white
 px-10 py-4 rounded-2xl font-bold text-lg
@@ -359,6 +349,7 @@ relative overflow-hidden p-5 rounded-2xl flex items-center justify-between  tran
               </span>
             </div>
           </div>
+          <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
         </section>
       </main>
     </div>
