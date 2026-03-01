@@ -1,26 +1,22 @@
-# Use lightweight Node image
-FROM node:18-alpine
+FROM node:20-alpine
 
-# Set working directory
 WORKDIR /app
 
-# Copy package files
 COPY package*.json ./
+RUN npm install --legacy-peer-deps
 
-# Install dependencies
-RUN npm install
-
-# Copy project files
 COPY . .
 
-# Build React app
+# 👇 Accept build-time variables
+ARG VITE_CLERK_PUBLISHABLE_KEY
+ARG VITE_API_URL
+
+# 👇 Inject into Vite build
+ENV VITE_CLERK_PUBLISHABLE_KEY=$VITE_CLERK_PUBLISHABLE_KEY
+ENV VITE_API_URL=$VITE_API_URL
+
 RUN npm run build
 
-# Install serve to host build
 RUN npm install -g serve
 
-# Expose port
-EXPOSE 3000
-
-# Start frontend
 CMD ["serve", "-s", "dist", "-l", "3000"]
