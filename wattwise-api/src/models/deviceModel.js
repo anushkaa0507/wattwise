@@ -1,11 +1,13 @@
+const { v4: uuidv4 } = require("uuid");
+
 function createDevice(name, watt) {
   return {
-    id: Date.now().toString(),
+    id: uuidv4(),
     name,
     watt,
     isOn: false,
     startTime: null,
-    units: 0
+    totalEnergy: 0, 
   };
 }
 
