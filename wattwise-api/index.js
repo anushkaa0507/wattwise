@@ -7,37 +7,25 @@ const cors = require("cors");
 const { clerkMiddleware, requireAuth } = require("@clerk/express");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true
+}));
 app.use(express.json());
 
-// ✅ Clerk added here
 app.use(clerkMiddleware());
 
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: "*" },
+  cors: {
+    origin: process.env.FRONTEND_URL,
+    methods: ["GET", "POST"]
+  },
 });
 
 let devices = {};
 
-/*
-device structure:
-{
-  id: {
-    name: "Fan",
-    watt: 75,
-    isOn: true,
-    startTime: Date,
-    units: 0
-  }
-}
-*/
 
-//
-// ✅ ALL ROUTES MUST NOW BE PROTECTED WITH requireAuth()
-//
-
-// Add device
 app.post("/add-device", requireAuth(), (req, res) => {
   const { name, watt } = req.body;
   const id = Date.now().toString();
@@ -89,7 +77,8 @@ setInterval(() => {
 
   io.emit("energy-update", Object.values(devices));
 }, 1000);
+const PORT = process.env.PORT || 5000;
 
-server.listen(process.env.PORT || 5000, () =>
-  console.log("⚡ Wattwise API running on port 5000")
+server.listen(PORT, () =>
+  console.log(`⚡ Wattwise API running on port ${PORT}`)
 );
