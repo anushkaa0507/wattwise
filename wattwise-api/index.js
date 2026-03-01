@@ -92,3 +92,6 @@ const PORT = process.env.PORT || 5000;
 server.listen(PORT, () =>
   console.log(`⚡ Wattwise API running on port ${PORT}`)
 );
+app.get("/", (req, res) => {
+  res.send("Wattwise API Running 🚀");
+});
