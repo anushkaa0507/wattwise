@@ -9,7 +9,10 @@ const { clerkMiddleware, requireAuth } = require("@clerk/express");
 const app = express();
 
 app.use(cors({
-  origin: "https://wattwise-plum.vercel.app",
+  origin: [
+    "http://localhost:5173",
+    "https://wattwise-plum.vercel.app"
+  ],
   credentials: true
 }));
 app.use(express.json());
