@@ -1,6 +1,6 @@
 require("dotenv").config(); // MUST BE FIRST
 const mongoose = require("mongoose");
-
+const Device = require('./src/models/Device');
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB Error:", err));
@@ -10,7 +10,6 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const { clerkMiddleware, requireAuth } = require("@clerk/express");
-const Device = require('./models/Device');
 const app = express();
 
 app.use(cors({
