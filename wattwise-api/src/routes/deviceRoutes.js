@@ -1,44 +1,41 @@
 const express = require("express");
-const { requireAuth } = require("@clerk/express");
-const {
-  getDevices,
-  addDevice,
-  toggleDevice,
-} = require("../services/deviceService");
-
 const router = express.Router();
 
-router.use(requireAuth());
+const {
+  addDevice,
+  toggleDevice,
+  getDevices,
+} = require("../services/deviceService");
 
-router.get("/", (req, res) => {
+// Create device
+router.post("/", async (req, res) => {
   try {
-    const userId = req.auth.userId;
-    const devices = getDevices(userId);
+    const { userId, name, watt } = req.body;
+    const device = await addDevice(userId, name, watt);
+    res.json(device);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Failed to add device");
+  }
+});
+
+// Get all devices for a user
+router.get("/:userId", async (req, res) => {
+  try {
+    const devices = await getDevices(req.params.userId);
     res.json(devices);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).send("Failed to fetch devices");
   }
 });
 
-router.post("/", (req, res) => {
+// Toggle ON/OFF
+router.patch("/:userId/:id", async (req, res) => {
   try {
-    const userId = req.auth.userId;
-    const { name, watt } = req.body;
-
-    const device = addDevice(userId, name, watt);
+    const device = await toggleDevice(req.params.userId, req.params.id);
     res.json(device);
   } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
-
-router.patch("/:id/toggle", (req, res) => {
-  try {
-    const userId = req.auth.userId;
-    const device = toggleDevice(userId, req.params.id);
-    res.json(device);
-  } catch (err) {
-    res.status(404).json({ message: err.message });
+    res.status(500).send("Toggle failed");
   }
 });
 
