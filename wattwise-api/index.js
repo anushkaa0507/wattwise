@@ -41,35 +41,27 @@ const io = new Server(server, {
 // Store devices per user
 let userDevices = {};
 
-app.post("/add-device", requireAuth(), (req, res) => {
+app.post("/add-device", requireAuth(), async (req, res) => {
   const userId = req.auth.userId;
   const { name, watt } = req.body;
-  const id = Date.now().toString();
 
-  if (!userDevices[userId]) {
-    userDevices[userId] = [];
-  }
-
-  const device = {
-    id,
+  const device = await Device.create({
+    userId,
     name,
     watt,
-    isOn: false,
-    startTime: null,
-    units: 0,
-    liveUnits: 0,
-  };
-
-  userDevices[userId].push(device);
+  });
 
   res.json(device);
 });
 
-app.post("/toggle/:id", requireAuth(), (req, res) => {
+app.post("/toggle/:id", requireAuth(), async (req, res) => {
   const userId = req.auth.userId;
-  const devices = userDevices[userId] || [];
 
-  const device = devices.find(d => d.id === req.params.id);
+  const device = await Device.findOne({
+    _id: req.params.id,
+    userId,
+  });
+
   if (!device) return res.status(404).send("Not found");
 
   device.isOn = !device.isOn;
@@ -83,29 +75,30 @@ app.post("/toggle/:id", requireAuth(), (req, res) => {
     device.liveUnits = 0;
   }
 
+  await device.save();
   res.json(device);
 });
-app.get("/devices", requireAuth(), (req, res) => {
+app.get("/devices", requireAuth(), async (req, res) => {
   const userId = req.auth.userId;
-  res.json(userDevices[userId] || []);
+  const devices = await Device.find({ userId });
+  res.json(devices);
 });
 
 //
 // Live energy calculation (Socket.IO)
 //
-setInterval(() => {
-  Object.keys(userDevices).forEach((userId) => {
-    const devices = userDevices[userId];
+setInterval(async () => {
+  const devices = await Device.find({ isOn: true });
 
-    devices.forEach((device) => {
-      if (device.isOn && device.startTime) {
-        const hours = (Date.now() - device.startTime) / 3600000;
-        device.liveUnits = (device.watt * hours) / 1000;
-      }
-    });
+  for (const device of devices) {
+    if (device.startTime) {
+      const hours = (Date.now() - device.startTime) / 3600000;
+      device.liveUnits = (device.watt * hours) / 1000;
+      await device.save();
 
-    io.to(userId).emit("energy-update", devices);
-  });
+      io.to(device.userId).emit("energy-update", device);
+    }
+  }
 }, 1000);
 io.on("connection", (socket) => {
   console.log("User connected");
