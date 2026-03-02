@@ -10,7 +10,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const { clerkMiddleware, requireAuth } = require("@clerk/express");
-const Device = require("./models/Device");
+const Device = require('./models/Device');
 const app = express();
 
 app.use(cors({
