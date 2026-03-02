@@ -1,68 +1,61 @@
 import { useEffect, useState } from "react";
-import { useAuth, UserButton } from "@clerk/clerk-react";
+import { useAuth, useUser, UserButton } from "@clerk/clerk-react";
 import { io } from "socket.io-client";
 import { fetchDevices, addDevice, toggleDevice } from "./services/deviceApi";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 export default function Dashboard() {
-  const { getToken } = useAuth();
-
+const { getToken } = useAuth();
+const { user, isLoaded } = useUser();
   const [devices, setDevices] = useState([]);
   const [name, setName] = useState("");
   const [watt, setWatt] = useState("");
   const [showModal, setShowModal] = useState(false);
+useEffect(() => {
+  if (!isLoaded || !user) return;
 
-  // 🔹 Load Devices
-  useEffect(() => {
-    const load = async () => {
-      const token = await getToken();
-      const data = await fetchDevices(token);
-      setDevices(data);
-    };
-    load();
-  }, []);
-
-  // 🔹 Socket Connection
-  useEffect(() => {
-    const connectSocket = async () => {
-      const token = await getToken();
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      const userId = payload.sub;
-
-      const socket = io(BASE_URL, {
-        transports: ["websocket"],
-      });
-
-      socket.emit("join", userId);
-
-      socket.on("energy-update", (updatedDevices) => {
-        setDevices(updatedDevices);
-      });
-
-      return () => socket.disconnect();
-    };
-
-    connectSocket();
-  }, []);
-
-  // 🔹 Add Device
-  const handleAdd = async () => {
-    if (!name || !watt) return;
-
+  const load = async () => {
     const token = await getToken();
-    await addDevice(name, Number(watt), token);
 
-    setName("");
-    setWatt("");
-    setShowModal(false);
+    const data = await fetchDevices(user.id, token); // ✅ correct
+    setDevices(data);
   };
 
-  // 🔹 Toggle
-  const handleToggle = async (id) => {
-    const token = await getToken();
-    await toggleDevice(id, token);
-  };
+  load();
+}, [isLoaded, user]);
+
+useEffect(() => {
+  if (!isLoaded || !user) return;
+
+  const socket = io(BASE_URL, {
+    transports: ["websocket"],
+  });
+
+  socket.emit("join", user.id); // ✅ use Clerk ID directly
+
+  socket.on("energy-update", (updatedDevices) => {
+    setDevices(updatedDevices);
+  });
+
+  return () => socket.disconnect();
+}, [isLoaded, user]);
+const handleAdd = async () => {
+  if (!name || !watt) return;
+
+  const token = await getToken();
+
+  await addDevice(user.id, name, Number(watt), token); // ✅ include userId
+
+  setName("");
+  setWatt("");
+  setShowModal(false);
+};
+
+const handleToggle = async (id) => {
+  const token = await getToken();
+  await toggleDevice(user.id, id, token); // ✅ include userId
+};
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-sky-100 to-purple-100 font-sans">
