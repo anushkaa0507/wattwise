@@ -1,5 +1,5 @@
 const pool = require("../config/db");
-const { io } = require("../../server");
+const { io } = require("../../index");
 
 /**
  * Add a new device
