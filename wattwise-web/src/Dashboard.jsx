@@ -13,18 +13,17 @@ const { user, isLoaded } = useUser();
   const [watt, setWatt] = useState("");
   const [showModal, setShowModal] = useState(false);
 useEffect(() => {
-  if (!isLoaded || !user) return;
-
   const load = async () => {
     const token = await getToken();
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    const userId = payload.sub;
 
-    const data = await fetchDevices(user.id, token); // ✅ correct
+    const data = await fetchDevices(userId, token);
     setDevices(data);
   };
 
   load();
-}, [isLoaded, user]);
-
+}, []);
 useEffect(() => {
   if (!isLoaded || !user) return;
 
@@ -45,8 +44,10 @@ const handleAdd = async () => {
 
   const token = await getToken();
 
-  await addDevice(user.id, name, Number(watt), token); // ✅ include userId
+const payload = JSON.parse(atob(token.split(".")[1]));
+const userId = payload.sub;
 
+await addDevice(userId, name, Number(watt), token);
   setName("");
   setWatt("");
   setShowModal(false);
@@ -54,8 +55,10 @@ const handleAdd = async () => {
 
 const handleToggle = async (id) => {
   const token = await getToken();
-  await toggleDevice(user.id, id, token); // ✅ include userId
-};
+const payload = JSON.parse(atob(token.split(".")[1]));
+const userId = payload.sub;
+
+await toggleDevice(userId, id, token);};
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-sky-100 to-purple-100 font-sans">
