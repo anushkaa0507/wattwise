@@ -15,8 +15,7 @@ const { user, isLoaded } = useUser();
 useEffect(() => {
   const load = async () => {
     const token = await getToken();
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    const userId = payload.sub;
+
 
     const data = await fetchDevices(userId, token);
     setDevices(data);
@@ -44,8 +43,6 @@ const handleAdd = async () => {
 
   const token = await getToken();
 
-const payload = JSON.parse(atob(token.split(".")[1]));
-const userId = payload.sub;
 
 await addDevice(userId, name, Number(watt), token);
   setName("");
@@ -55,8 +52,7 @@ await addDevice(userId, name, Number(watt), token);
 
 const handleToggle = async (id) => {
   const token = await getToken();
-const payload = JSON.parse(atob(token.split(".")[1]));
-const userId = payload.sub;
+
 
 await toggleDevice(userId, id, token);};
 
