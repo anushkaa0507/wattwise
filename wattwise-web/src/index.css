@@ -1,4 +1,69 @@
 @import "tailwindcss";
+ 
+@tailwind utilities;
+
+/* ===== Custom Pastel Colors ===== */
+.bg-mint { background: #dcfce7; }
+.bg-pale-yellow { background: #fef9c3; }
+.bg-baby-blue { background: #e0f2fe; }
+
+/* ===== AC Animation ===== */
+@keyframes vent-move {
+  0%,100% { transform: rotateX(0deg); }
+  50% { transform: rotateX(45deg); }
+}
+.ac-vent {
+  animation: vent-move 3s ease-in-out infinite;
+  transform-origin: top;
+}
+
+@keyframes particle-flow {
+  0% { transform: translateY(0) scale(1); opacity: 0; }
+  20% { opacity: 0.4; }
+  100% { transform: translateY(40px) scale(1.5); opacity: 0; }
+}
+.air-particle {
+  animation: particle-flow 2s linear infinite;
+}
+
+/* ===== FAN Animation ===== */
+@keyframes fan-spin {
+  from { transform: rotateX(60deg) rotateZ(0deg); }
+  to { transform: rotateX(60deg) rotateZ(360deg); }
+}
+.fan-container { perspective: 1000px; }
+.fan-blades {
+  transform-style: preserve-3d;
+  animation: fan-spin 1s linear infinite;
+}
+.fan-blade {
+  position: absolute;
+  width: 60px;
+  height: 15px;
+  background: linear-gradient(to right, #94a3b8, #cbd5e1);
+  border-radius: 40% 10% 10% 40%;
+  transform-origin: left center;
+}
+
+/* ===== LAMP Animation ===== */
+@keyframes lamp-tilt {
+  0%,100% { transform: rotate(-5deg); }
+  50% { transform: rotate(10deg); }
+}
+.lamp-head {
+  transform-origin: bottom center;
+  animation: lamp-tilt 4s ease-in-out infinite;
+}
+.lamp-glow-effect {
+  background: radial-gradient(circle, rgba(251,191,36,0.4) 0%, rgba(251,191,36,0) 70%);
+}
+
+/* ===== Pulse Dot ===== */
+@keyframes pulse-stream {
+  0%,100% { transform: scale(1); opacity:1; }
+  50% { transform: scale(1.5); opacity:0.4; }
+}
+.pulse-dot { animation: pulse-stream 1.5s infinite; }
 :root {
   --sky-blue: #e0f2fe;
   --lavender-pastel: #f3e8ff;
