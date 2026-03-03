@@ -27,8 +27,9 @@ app.use(express.json());
 app.use(clerkMiddleware());
 
 /* ---------- ROUTES ---------- */
-app.use("/devices", deviceRoutes);
+const { requireAuth } = require("@clerk/express");
 
+app.use("/devices", requireAuth(), deviceRoutes);
 /* ---------- SOCKET ---------- */
 initSocket(server);
 
