@@ -9,7 +9,7 @@ async function toggleDevice(userId, id) {
   const device = rows[0];
 
   if (!device.is_on) {
-    // TURNING ON
+    // TURN ON
     await pool.query(
       `UPDATE devices
        SET is_on = true,
@@ -18,32 +18,34 @@ async function toggleDevice(userId, id) {
       [id, userId]
     );
   } else {
-    // TURNING OFF → CALCULATE ENERGY
-    const { rows: timeRows } = await pool.query(
-      `SELECT EXTRACT(EPOCH FROM (NOW() - start_time)) as seconds
-       FROM devices
-       WHERE id = $1 AND user_id = $2`,
-      [id, userId]
-    );
+    if (!device.start_time) {
+      // safety check
+      await pool.query(
+        `UPDATE devices
+         SET is_on = false
+         WHERE id = $1 AND user_id = $2`,
+        [id, userId]
+      );
+    } else {
+      const seconds =
+        (Date.now() - new Date(device.start_time).getTime()) / 1000;
 
-    const seconds = timeRows[0].seconds || 0;
+      const hours = seconds / 3600;
+      const energyUsed =
+        (Number(device.power_rating) * hours) / 1000;
 
-    // watts × hours / 1000 = kWh
-    const hours = seconds / 3600;
-    const energyUsed = (device.power_rating * hours) / 1000;
-
-    await pool.query(
-      `UPDATE devices
-       SET is_on = false,
-           start_time = NULL,
-           total_energy = total_energy + $1
-       WHERE id = $2 AND user_id = $3`,
-      [energyUsed, id, userId]
-    );
+      await pool.query(
+        `UPDATE devices
+         SET is_on = false,
+             start_time = NULL,
+             total_energy = total_energy + $1
+         WHERE id = $2 AND user_id = $3`,
+        [energyUsed, id, userId]
+      );
+    }
   }
 
   const devices = await getDevices(userId);
-
   const io = getIO();
   io.to(userId).emit("energy-update", devices);
 
