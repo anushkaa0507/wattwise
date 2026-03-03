@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useAuth, useUser, UserButton } from "@clerk/clerk-react";
 import { io } from "socket.io-client";
@@ -183,9 +182,42 @@ function LiveWatts({ value, color, dotColor }) {
 }
 
 function ACCard({ device, onToggle }) {
+  const [liveEnergy, setLiveEnergy] = useState(
+    Number(device.total_energy || 0),
+  );
+  useEffect(() => {
+    let interval;
+
+    if (device.is_on && device.start_time) {
+      interval = setInterval(() => {
+        const seconds =
+          (Date.now() - new Date(device.start_time).getTime()) / 1000;
+
+        const hours = seconds / 3600;
+
+        const energy =
+          Number(device.total_energy || 0) +
+          (device.power_rating * hours) / 1000;
+
+        setLiveEnergy(energy);
+      }, 1000);
+    } else {
+      setLiveEnergy(Number(device.total_energy || 0));
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [
+    device.is_on,
+    device.start_time,
+    device.total_energy,
+    device.power_rating,
+  ]);
+
   const watts = device.is_on
     ? `${device.power_rating} W`
-    : `${Number(device.total_energy || 0).toFixed(3)} kWh`;
+    : `${liveEnergy.toFixed(3)} kWh`;
   return (
     <div
       className="device-card"
@@ -413,9 +445,43 @@ function ACCard({ device, onToggle }) {
 }
 
 function FanCard({ device, onToggle }) {
+  const [liveEnergy, setLiveEnergy] = useState(
+    Number(device.total_energy || 0),
+  );
+
+  useEffect(() => {
+    let interval;
+
+    if (device.is_on && device.start_time) {
+      interval = setInterval(() => {
+        const seconds =
+          (Date.now() - new Date(device.start_time).getTime()) / 1000;
+
+        const hours = seconds / 3600;
+
+        const energy =
+          Number(device.total_energy || 0) +
+          (device.power_rating * hours) / 1000;
+
+        setLiveEnergy(energy);
+      }, 1000);
+    } else {
+      setLiveEnergy(Number(device.total_energy || 0));
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [
+    device.is_on,
+    device.start_time,
+    device.total_energy,
+    device.power_rating,
+  ]);
+
   const watts = device.is_on
     ? `${device.power_rating} W`
-    : `${Number(device.total_energy || 0).toFixed(3)} kWh`;
+    : `${liveEnergy.toFixed(3)} kWh`;
   return (
     <div
       className="device-card"
@@ -578,9 +644,43 @@ function FanCard({ device, onToggle }) {
 }
 
 function LampCard({ device, onToggle }) {
+  const [liveEnergy, setLiveEnergy] = useState(
+    Number(device.total_energy || 0),
+  );
+
+  useEffect(() => {
+    let interval;
+
+    if (device.is_on && device.start_time) {
+      interval = setInterval(() => {
+        const seconds =
+          (Date.now() - new Date(device.start_time).getTime()) / 1000;
+
+        const hours = seconds / 3600;
+
+        const energy =
+          Number(device.total_energy || 0) +
+          (device.power_rating * hours) / 1000;
+
+        setLiveEnergy(energy);
+      }, 1000);
+    } else {
+      setLiveEnergy(Number(device.total_energy || 0));
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [
+    device.is_on,
+    device.start_time,
+    device.total_energy,
+    device.power_rating,
+  ]);
+
   const watts = device.is_on
     ? `${device.power_rating} W`
-    : `${Number(device.total_energy || 0).toFixed(3)} kWh`;
+    : `${liveEnergy.toFixed(3)} kWh`;
   return (
     <div
       className="device-card"
@@ -733,9 +833,42 @@ function LampCard({ device, onToggle }) {
 }
 
 function GenericCard({ device, onToggle }) {
+  const [liveEnergy, setLiveEnergy] = useState(
+    Number(device.total_energy || 0),
+  );
+  useEffect(() => {
+    let interval;
+
+    if (device.is_on && device.start_time) {
+      interval = setInterval(() => {
+        const seconds =
+          (Date.now() - new Date(device.start_time).getTime()) / 1000;
+
+        const hours = seconds / 3600;
+
+        const energy =
+          Number(device.total_energy || 0) +
+          (device.power_rating * hours) / 1000;
+
+        setLiveEnergy(energy);
+      }, 1000);
+    } else {
+      setLiveEnergy(Number(device.total_energy || 0));
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [
+    device.is_on,
+    device.start_time,
+    device.total_energy,
+    device.power_rating,
+  ]);
+
   const watts = device.is_on
     ? `${device.power_rating} W`
-    : `${Number(device.total_energy || 0).toFixed(3)} kWh`;
+    : `${liveEnergy.toFixed(3)} kWh`;
   const type = detectType(device.name);
   const icon = type === "fridge" ? "kitchen" : "electrical_services";
   return (
@@ -1155,7 +1288,11 @@ export default function Dashboard() {
     if (!isLoaded || !user?.id) return;
     const socket = io(BASE_URL, { transports: ["websocket"] });
     socket.emit("join", user.id);
-    socket.on("energy-update", (updatedDevices) => setDevices(updatedDevices));
+    socket.on("energy-update", (updatedDevice) => {
+      setDevices((prev) =>
+        prev.map((d) => (d.id === updatedDevice.id ? updatedDevice : d)),
+      );
+    });
     return () => socket.disconnect();
   }, [isLoaded, user]);
   const handleAdd = async (name, watt) => {

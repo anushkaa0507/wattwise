@@ -24,10 +24,12 @@ async function addDevice(userId, name, watt) {
      RETURNING *`,
     [userId, name, watt]
   );
+const newDevice = rows[0];
 
-  const devices = await getDevices(userId);
-  const io = getIO();
-  io.to(userId).emit("energy-update", devices);
+const io = getIO();
+io.to(userId).emit("energy-update", newDevice);
+
+return newDevice;
 
   return rows[0];
 }
@@ -80,9 +82,17 @@ async function toggleDevice(userId, id) {
     }
   }
 
-  const devices = await getDevices(userId);
-  const io = getIO();
-  io.to(userId).emit("energy-update", devices);
+const { rows: updatedRows } = await pool.query(
+  `SELECT * FROM devices WHERE id = $1 AND user_id = $2`,
+  [id, userId]
+);
+
+const updatedDevice = updatedRows[0];
+
+const io = getIO();
+io.to(userId).emit("energy-update", updatedDevice);
+
+return updatedDevice;
 
   return devices;
 }
