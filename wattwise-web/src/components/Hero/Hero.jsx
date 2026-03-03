@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import AuthModal from "./components/AuthModal";
+import AuthModal from "../UI/AuthModal";
 import { useState } from "react";
 import {
   SignInButton,

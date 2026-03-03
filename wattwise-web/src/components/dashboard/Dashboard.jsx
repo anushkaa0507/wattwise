@@ -260,7 +260,7 @@
 import { useEffect, useState } from "react";
 import { useAuth, useUser, UserButton } from "@clerk/clerk-react";
 import { io } from "socket.io-client";
-import { fetchDevices, addDevice, toggleDevice } from "./services/deviceApi";
+import { fetchDevices, addDevice, toggleDevice } from "../../../services/deviceApi";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -472,12 +472,31 @@ function FanCard({ device, onToggle }) {
     }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
         <div style={{ position: "relative", width: 96, height: 96, display: "flex", alignItems: "center", justifyContent: "center", perspective: "1000px" }}>
-          <div className={`fan-blades ${device.is_on ? "fan-blades-fast" : ""}`} style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ width: 24, height: 24, background: "#cbd5e1", borderRadius: "50%", border: "2px solid white", boxShadow: "0 2px 8px rgba(0,0,0,0.15)", position: "relative", zIndex: 20 }} />
+          {/* Spinning blades — stopped when off */}
+          <div
+            style={{
+              position: "relative",
+              width: 80, height: 80,
+              transformStyle: "preserve-3d",
+              animation: device.is_on ? "fan-spin 0.5s linear infinite" : "none",
+            }}
+          >
             <div className="fan-blade" style={{ transform: "rotateZ(0deg) translate(8px, 0)" }} />
             <div className="fan-blade" style={{ transform: "rotateZ(120deg) translate(8px, 0)" }} />
             <div className="fan-blade" style={{ transform: "rotateZ(240deg) translate(8px, 0)" }} />
           </div>
+          {/* Hub circle — absolutely centered, never spins */}
+          <div style={{
+            position: "absolute",
+            top: "50%", left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 24, height: 24,
+            background: "#cbd5e1",
+            borderRadius: "50%",
+            border: "2px solid white",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            zIndex: 20,
+          }} />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <div style={{ display: "flex", background: "rgba(255,255,255,0.4)", borderRadius: 8, padding: 4 }}>
