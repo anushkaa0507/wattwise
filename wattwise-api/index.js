@@ -1,3 +1,4 @@
+
 require("dotenv").config();
 
 const express = require("express");
@@ -12,7 +13,6 @@ const { initSocket } = require("./src/socket");
 const app = express();
 const server = http.createServer(app);
 
-/* ---------- REQUIRED FOR RENDER ---------- */
 app.get("/", (req, res) => {
   res.send("WattWise API is running ⚡");
 });
@@ -27,11 +27,16 @@ app.use(express.json());
 app.use(clerkMiddleware());
 
 /* ---------- ROUTES ---------- */
-const { requireAuth } = require("@clerk/express");
+app.use("/devices", deviceRoutes);
 
-app.use("/devices", requireAuth(), deviceRoutes);
 /* ---------- SOCKET ---------- */
 initSocket(server);
+
+/* ---------- GLOBAL ERROR HANDLER ---------- */
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ message: "Server error" });
+});
 
 /* ---------- START ---------- */
 const PORT = process.env.PORT || 5000;
@@ -39,7 +44,6 @@ const PORT = process.env.PORT || 5000;
 pool.query("SELECT NOW()")
   .then(() => {
     console.log("✅ DB Connected");
-
     server.listen(PORT, "0.0.0.0", () => {
       console.log(`⚡ Server running on ${PORT}`);
     });
