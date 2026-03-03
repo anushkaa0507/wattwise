@@ -1,74 +1,51 @@
-const pool = require("../config/db");
-const { getIO } = require("../socket");
-
-/**
- * Add new device
- */
-async function addDevice(userId, name, watt) {
-  const { rows } = await pool.query(
-    `INSERT INTO devices (user_id, name, power_rating)
-     VALUES ($1, $2, $3)
-     RETURNING *`,
-    [userId, name, watt]
-  );
-
-  const devices = await getDevices(userId);
-
-  // realtime update
-  const io = getIO();
-  io.to(userId).emit("energy-update", devices);
-
-  return rows[0];
-}
-
-/**
- * Toggle device ON/OFF
- */
 async function toggleDevice(userId, id) {
   const { rows } = await pool.query(
-    `SELECT * FROM devices 
-     WHERE id = $1 AND user_id = $2`,
+    `SELECT * FROM devices WHERE id = $1 AND user_id = $2`,
     [id, userId]
   );
 
   if (!rows.length) return null;
 
   const device = rows[0];
-  const isOn = !device.is_on;
-  const startTime = isOn ? Date.now() : null;
 
-  await pool.query(
-    `UPDATE devices
-     SET is_on = $1,
-         start_time = $2
-     WHERE id = $3`,
-    [isOn, startTime, id]
-  );
+  if (!device.is_on) {
+    // TURNING ON
+    await pool.query(
+      `UPDATE devices
+       SET is_on = true,
+           start_time = NOW()
+       WHERE id = $1 AND user_id = $2`,
+      [id, userId]
+    );
+  } else {
+    // TURNING OFF → CALCULATE ENERGY
+    const { rows: timeRows } = await pool.query(
+      `SELECT EXTRACT(EPOCH FROM (NOW() - start_time)) as seconds
+       FROM devices
+       WHERE id = $1 AND user_id = $2`,
+      [id, userId]
+    );
 
-  const io = getIO();
+    const seconds = timeRows[0].seconds || 0;
+
+    // watts × hours / 1000 = kWh
+    const hours = seconds / 3600;
+    const energyUsed = (device.power_rating * hours) / 1000;
+
+    await pool.query(
+      `UPDATE devices
+       SET is_on = false,
+           start_time = NULL,
+           total_energy = total_energy + $1
+       WHERE id = $2 AND user_id = $3`,
+      [energyUsed, id, userId]
+    );
+  }
+
   const devices = await getDevices(userId);
 
+  const io = getIO();
   io.to(userId).emit("energy-update", devices);
 
-  return { ...device, is_on: isOn };
+  return devices;
 }
-
-/**
- * Get devices
- */
-async function getDevices(userId) {
-  const { rows } = await pool.query(
-    `SELECT * FROM devices
-     WHERE user_id = $1
-     ORDER BY created_at DESC`,
-    [userId]
-  );
-
-  return rows;
-}
-
-module.exports = {
-  addDevice,
-  toggleDevice,
-  getDevices
-};
