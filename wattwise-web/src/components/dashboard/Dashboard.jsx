@@ -1,261 +1,3 @@
-// import { useEffect, useState } from "react";
-// import { useAuth, useUser, UserButton } from "@clerk/clerk-react";
-// import { io } from "socket.io-client";
-// import { fetchDevices, addDevice, toggleDevice } from "./services/deviceApi";
-
-// const BASE_URL = import.meta.env.VITE_API_URL;
-
-// export default function Dashboard() {
-//   const { getToken } = useAuth();
-//   const { user, isLoaded } = useUser();
-//   const [devices, setDevices] = useState([]);
-//   const [name, setName] = useState("");
-//   const [watt, setWatt] = useState("");
-//   const [showModal, setShowModal] = useState(false);
-
-//   /* ---------------- LOAD DEVICES ---------------- */
-//   useEffect(() => {
-//     const load = async () => {
-//       if (!isLoaded || !user) return;
-//       const token = await getToken();
-//       const data = await fetchDevices(token);
-//       setDevices(data || []);
-//     };
-//     load();
-//   }, [isLoaded, user]);
-
-//   /* ---------------- SOCKET ---------------- */
-//   useEffect(() => {
-//     if (!isLoaded || !user?.id) return;
-
-//     const socket = io(BASE_URL, { transports: ["websocket"] });
-//     socket.emit("join", user.id);
-
-//     socket.on("energy-update", (updatedDevices) => {
-//       setDevices(updatedDevices);
-//     });
-
-//     return () => socket.disconnect();
-//   }, [isLoaded, user]);
-
-//   /* ---------------- ADD DEVICE ---------------- */
-//   const handleAdd = async () => {
-//     if (!name || !watt) return;
-//     const token = await getToken();
-//     await addDevice(name, Number(watt), token);
-//     const data = await fetchDevices(token);
-//     setDevices(data);
-//     setName("");
-//     setWatt("");
-//     setShowModal(false);
-//   };
-
-//   /* ---------------- TOGGLE ---------------- */
-//   const handleToggle = async (id) => {
-//     const token = await getToken();
-//     await toggleDevice(id, token);
-//     const data = await fetchDevices(token);
-//     setDevices(data);
-//   };
-
-//   /* ---------------- DEVICE COLOR LOGIC ---------------- */
-//   const getCardColor = (name) => {
-//     if (name.toLowerCase().includes("fan")) return "bg-mint";
-//     if (name.toLowerCase().includes("lamp")) return "bg-pale-yellow";
-//     if (name.toLowerCase().includes("ac")) return "bg-baby-blue";
-//     return "bg-white/60";
-//   };
-
-//   return (
-//     <div className="flex h-screen font-sans bg-gradient-to-br from-sky-100 to-purple-100">
-
-//       {/* ---------------- SIDEBAR ---------------- */}
-//       <aside className="w-72 backdrop-blur-xl bg-white/60 p-8 flex flex-col border-r border-white/40">
-//         <div className="flex items-center gap-3 mb-12">
-//           <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center text-white text-xl shadow-lg">
-//             ⚡
-//           </div>
-//           <h1 className="text-2xl font-black tracking-tight">WattWise</h1>
-//         </div>
-
-//         <nav className="space-y-3 text-slate-600 font-semibold">
-//           <div className="bg-white/80 rounded-2xl px-6 py-4 shadow text-slate-800 font-bold">
-//             Dashboard
-//           </div>
-//           <div className="px-6 py-4 hover:bg-white/60 rounded-2xl cursor-pointer">
-//             Devices
-//           </div>
-//         </nav>
-
-//         <div className="mt-auto pt-10">
-//           <UserButton afterSignOutUrl="/" />
-//         </div>
-//       </aside>
-
-//       {/* ---------------- MAIN ---------------- */}
-//       <div className="flex-1 overflow-y-auto p-10">
-
-//         {/* HEADER */}
-//         <div className="flex justify-between items-end mb-12">
-//           <div>
-//             <h2 className="text-4xl font-black tracking-tight mb-2">
-//               My Smart Home
-//             </h2>
-//             <p className="text-slate-500 font-medium">
-//               Real-time telemetry active for {devices.length} devices
-//             </p>
-//           </div>
-
-//           <button
-//             onClick={() => setShowModal(true)}
-//             className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-2xl font-black shadow-xl shadow-orange-400/30 transition active:scale-95"
-//           >
-//             + Add New Device
-//           </button>
-//         </div>
-
-//         {/* DEVICE GRID */}
-//         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-//           {devices.map((device) => {
-//   const name = device.name.toLowerCase();
-
-//   const renderIcon = () => {
-
-//     /* ===== AC ===== */
-//     if (name.includes("ac")) {
-//       return (
-//         <div className="relative w-24 h-24 flex items-center justify-center">
-//           <div className="w-20 h-10 bg-white rounded-md shadow-lg relative border border-slate-100 overflow-hidden">
-//             <div className="absolute bottom-0 left-0 w-full h-3 bg-slate-50 border-t border-slate-100 ac-vent"></div>
-
-//             {device.is_on && (
-//               <>
-//                 <div className="absolute -bottom-4 left-4 w-1 h-1 bg-white/40 rounded-full air-particle"></div>
-//                 <div className="absolute -bottom-6 left-10 w-1.5 h-1.5 bg-white/30 rounded-full air-particle"></div>
-//                 <div className="absolute -bottom-2 left-14 w-1 h-1 bg-white/20 rounded-full air-particle"></div>
-//               </>
-//             )}
-//           </div>
-//         </div>
-//       );
-//     }
-
-//     /* ===== FAN ===== */
-//     if (name.includes("fan")) {
-//       return (
-//         <div className="relative w-24 h-24 flex items-center justify-center fan-container">
-//           <div className={`relative flex items-center justify-center ${device.is_on ? "fan-blades" : ""}`}>
-//             <div className="w-6 h-6 bg-slate-300 rounded-full border-2 border-white shadow-md relative z-20"></div>
-//             <div className="fan-blade" style={{ transform: "rotateZ(0deg) translate(8px,0)" }}></div>
-//             <div className="fan-blade" style={{ transform: "rotateZ(120deg) translate(8px,0)" }}></div>
-//             <div className="fan-blade" style={{ transform: "rotateZ(240deg) translate(8px,0)" }}></div>
-//           </div>
-//         </div>
-//       );
-//     }
-
-//     /* ===== LAMP ===== */
-//     if (name.includes("lamp")) {
-//       return (
-//         <div className="relative w-24 h-24 flex items-center justify-center">
-//           {device.is_on && (
-//             <div className="absolute inset-0 lamp-glow-effect opacity-40"></div>
-//           )}
-//           <div className="relative flex flex-col items-center">
-//             <div className="w-12 h-2 bg-slate-400 rounded-full mb-1"></div>
-//             <div className="w-1 h-12 bg-slate-300"></div>
-//             <div className="w-14 h-8 bg-slate-200 rounded-t-full relative -mt-1 lamp-head border border-slate-300"></div>
-//           </div>
-//         </div>
-//       );
-//     }
-
-//     return <div className="text-4xl">🔌</div>;
-//   };
-
-//   return (
-//     <div
-//       key={device.id}
-//       className="bg-white/60 rounded-[2.5rem] p-8 border border-white/40 backdrop-blur-xl shadow-lg hover:shadow-2xl transition-all flex flex-col"
-//     >
-//       <div className="flex justify-between items-start mb-6">
-//         {renderIcon()}
-
-//         <label className="relative inline-flex items-center cursor-pointer">
-//           <input
-//             type="checkbox"
-//             checked={device.is_on}
-//             onChange={() => handleToggle(device.id)}
-//             className="sr-only peer"
-//           />
-//           <div className="w-14 h-7 bg-white/40 rounded-full peer peer-checked:bg-orange-500 after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:h-5 after:w-5 after:rounded-full after:transition-all peer-checked:after:translate-x-full"></div>
-//         </label>
-//       </div>
-
-//       <h4 className="text-2xl font-black text-slate-800 mb-6">
-//         {device.name}
-//       </h4>
-
-//       <div className="mt-auto bg-white/50 rounded-2xl p-4 flex justify-between border border-white/20">
-//         <span className="text-xs font-bold uppercase text-slate-500 tracking-widest">
-//           Live Watts
-//         </span>
-
-//         <span className="font-black text-xl text-orange-500">
-//           {device.is_on ? `${device.power_rating} W` : "0 W"}
-//         </span>
-//       </div>
-//     </div>
-//   );
-// })}
-//         </div>
-//       </div>
-
-//       {/* ---------------- MODAL ---------------- */}
-//       {showModal && (
-//         <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center p-6 z-50">
-//           <div className="bg-white w-full max-w-xl rounded-[3rem] shadow-2xl p-10">
-
-//             <div className="flex justify-between items-center mb-10">
-//               <h3 className="text-3xl font-black">Add New Device</h3>
-//               <button
-//                 onClick={() => setShowModal(false)}
-//                 className="text-slate-500 text-xl"
-//               >
-//                 ✕
-//               </button>
-//             </div>
-
-//             <div className="space-y-6">
-//               <input
-//                 className="w-full bg-slate-100 rounded-3xl px-6 py-5 outline-none focus:ring-4 focus:ring-orange-200"
-//                 placeholder="Device Name"
-//                 value={name}
-//                 onChange={(e) => setName(e.target.value)}
-//               />
-
-//               <input
-//                 className="w-full bg-slate-100 rounded-3xl px-6 py-5 outline-none focus:ring-4 focus:ring-orange-200"
-//                 placeholder="Watt Rating"
-//                 value={watt}
-//                 onChange={(e) => setWatt(e.target.value)}
-//               />
-
-//               <button
-//                 onClick={handleAdd}
-//                 className="w-full bg-orange-500 hover:bg-orange-600 text-white font-black py-5 rounded-3xl shadow-xl transition active:scale-95"
-//               >
-//                 Register Device
-//               </button>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-// Dashboard.jsx — WattWise Enhanced UI
-// Exact animated device cards from design + original Clerk/socket/API logic intact
 
 import { useEffect, useState } from "react";
 import { useAuth, useUser, UserButton } from "@clerk/clerk-react";
@@ -443,7 +185,7 @@ function LiveWatts({ value, color, dotColor }) {
 function ACCard({ device, onToggle }) {
   const watts = device.is_on
     ? `${device.power_rating} W`
-    : `${device.total_energy?.toFixed(3) || 0} kWh`;
+    : `${Number(device.total_energy || 0).toFixed(3)} kWh`;
   return (
     <div
       className="device-card"
@@ -673,7 +415,7 @@ function ACCard({ device, onToggle }) {
 function FanCard({ device, onToggle }) {
   const watts = device.is_on
     ? `${device.power_rating} W`
-    : `${device.total_energy?.toFixed(3) || 0} kWh`;
+    : `${Number(device.total_energy || 0).toFixed(3)} kWh`;
   return (
     <div
       className="device-card"
@@ -838,7 +580,7 @@ function FanCard({ device, onToggle }) {
 function LampCard({ device, onToggle }) {
   const watts = device.is_on
     ? `${device.power_rating} W`
-    : `${device.total_energy?.toFixed(3) || 0} kWh`;
+    : `${Number(device.total_energy || 0).toFixed(3)} kWh`;
   return (
     <div
       className="device-card"
@@ -993,7 +735,7 @@ function LampCard({ device, onToggle }) {
 function GenericCard({ device, onToggle }) {
   const watts = device.is_on
     ? `${device.power_rating} W`
-    : `${device.total_energy?.toFixed(3) || 0} kWh`;
+    : `${Number(device.total_energy || 0).toFixed(3)} kWh`;
   const type = detectType(device.name);
   const icon = type === "fridge" ? "kitchen" : "electrical_services";
   return (
