@@ -1,3 +1,9 @@
+// Fixed frontend: Dashboard.jsx
+// Added try/catch for error logging
+// Fixed field names: use is_on, power_rating, live_units (assuming backend computes live_units)
+// Removed device.isOn and device.liveUnits (use snake_case from DB)
+// Added guard for user.id in socket
+// Fixed live display to use power_rating when on, or computed live if available
 import { useEffect, useState } from "react";
 import { useAuth, useUser, UserButton } from "@clerk/clerk-react";
 import { io } from "socket.io-client";
@@ -6,55 +12,72 @@ import { fetchDevices, addDevice, toggleDevice } from "./services/deviceApi";
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 export default function Dashboard() {
-const { getToken } = useAuth();
-const { user, isLoaded } = useUser();
+  const { getToken } = useAuth();
+  const { user, isLoaded } = useUser();
   const [devices, setDevices] = useState([]);
   const [name, setName] = useState("");
   const [watt, setWatt] = useState("");
   const [showModal, setShowModal] = useState(false);
-useEffect(() => {
-  const load = async () => {
-    const token = await getToken();
 
+  useEffect(() => {
+    const load = async () => {
+      if (!isLoaded || !user) return;
+      const token = await getToken();
+      if (!token) {
+        console.error("No auth token");
+        return;
+      }
+      try {
+        const data = await fetchDevices(token);
+        setDevices(data || []);
+      } catch (err) {
+        console.error("Fetch devices failed:", err);
+      }
+    };
+    load();
+  }, [isLoaded, user, getToken]);
 
-    const data = await fetchDevices(userId, token);
-    setDevices(data);
+  useEffect(() => {
+    if (!isLoaded || !user?.id) return;
+
+    const socket = io(BASE_URL, {
+      transports: ["websocket"],
+    });
+
+    socket.emit("join", user.id);
+
+    socket.on("energy-update", (updatedDevices) => {
+      setDevices(updatedDevices);
+    });
+
+    return () => socket.disconnect();
+  }, [isLoaded, user]);
+
+  const handleAdd = async () => {
+    if (!name || !watt) return;
+    try {
+      const token = await getToken();
+      await addDevice(name, Number(watt), token);
+      setName("");
+      setWatt("");
+      setShowModal(false);
+      const data = await fetchDevices(token);
+      setDevices(data);
+    } catch (err) {
+      console.error("Add device failed:", err);
+    }
   };
 
-  load();
-}, []);
-useEffect(() => {
-  if (!isLoaded || !user) return;
-
-  const socket = io(BASE_URL, {
-    transports: ["websocket"],
-  });
-
-  socket.emit("join", user.id); // ✅ use Clerk ID directly
-
-  socket.on("energy-update", (updatedDevices) => {
-    setDevices(updatedDevices);
-  });
-
-  return () => socket.disconnect();
-}, [isLoaded, user]);
-const handleAdd = async () => {
-  if (!name || !watt) return;
-
-  const token = await getToken();
-
-
-await addDevice(userId, name, Number(watt), token);
-  setName("");
-  setWatt("");
-  setShowModal(false);
-};
-
-const handleToggle = async (id) => {
-  const token = await getToken();
-
-
-await toggleDevice(userId, id, token);};
+  const handleToggle = async (id) => {
+    try {
+      const token = await getToken();
+      await toggleDevice(id, token);
+      const data = await fetchDevices(token);
+      setDevices(data);
+    } catch (err) {
+      console.error("Toggle failed:", err);
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-sky-100 to-purple-100 font-sans">
@@ -121,7 +144,7 @@ await toggleDevice(userId, id, token);};
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={device.isOn}
+                    checked={device.is_on}
                     onChange={() => handleToggle(device.id)}
                     className="sr-only peer"
                   />
@@ -139,9 +162,9 @@ await toggleDevice(userId, id, token);};
                 </span>
 
                 <span className="font-black text-lg text-orange-500">
-                  {device.isOn
-                    ? `${(device.liveUnits * 1000).toFixed(1)} W`
-                    : `${device.watt} W`}
+                  {device.is_on
+                    ? `${device.power_rating} W (Live: ${(device.live_units * 1000).toFixed(1)} mWh)`
+                    : "0 W"}
                 </span>
               </div>
             </div>

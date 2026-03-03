@@ -1,3 +1,4 @@
+
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 const getHeaders = (token) => ({
@@ -12,7 +13,7 @@ export async function fetchDevices(token) {
   const res = await fetch(`${BASE_URL}/devices`, {
     headers: getHeaders(token),
   });
-
+  if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
   return res.json();
 }
 
@@ -25,7 +26,7 @@ export async function addDevice(name, watt, token) {
     headers: getHeaders(token),
     body: JSON.stringify({ name, watt }),
   });
-
+  if (!res.ok) throw new Error(`Add failed: ${res.status}`);
   return res.json();
 }
 
@@ -37,6 +38,6 @@ export async function toggleDevice(id, token) {
     method: "PATCH",
     headers: getHeaders(token),
   });
-
+  if (!res.ok) throw new Error(`Toggle failed: ${res.status}`);
   return res.json();
 }
