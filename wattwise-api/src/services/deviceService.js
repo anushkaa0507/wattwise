@@ -1,3 +1,40 @@
+const pool = require("../config/db");
+const { getIO } = require("../socket");
+
+/**
+ * Get devices
+ */
+async function getDevices(userId) {
+  const { rows } = await pool.query(
+    `SELECT * FROM devices
+     WHERE user_id = $1
+     ORDER BY created_at DESC`,
+    [userId]
+  );
+  return rows;
+}
+
+/**
+ * Add device
+ */
+async function addDevice(userId, name, watt) {
+  const { rows } = await pool.query(
+    `INSERT INTO devices (user_id, name, power_rating)
+     VALUES ($1, $2, $3)
+     RETURNING *`,
+    [userId, name, watt]
+  );
+
+  const devices = await getDevices(userId);
+  const io = getIO();
+  io.to(userId).emit("energy-update", devices);
+
+  return rows[0];
+}
+
+/**
+ * Toggle device
+ */
 async function toggleDevice(userId, id) {
   const { rows } = await pool.query(
     `SELECT * FROM devices WHERE id = $1 AND user_id = $2`,
@@ -9,7 +46,6 @@ async function toggleDevice(userId, id) {
   const device = rows[0];
 
   if (!device.is_on) {
-    // TURN ON
     await pool.query(
       `UPDATE devices
        SET is_on = true,
@@ -18,15 +54,7 @@ async function toggleDevice(userId, id) {
       [id, userId]
     );
   } else {
-    if (!device.start_time) {
-      // safety check
-      await pool.query(
-        `UPDATE devices
-         SET is_on = false
-         WHERE id = $1 AND user_id = $2`,
-        [id, userId]
-      );
-    } else {
+    if (device.start_time) {
       const seconds =
         (Date.now() - new Date(device.start_time).getTime()) / 1000;
 
@@ -42,6 +70,13 @@ async function toggleDevice(userId, id) {
          WHERE id = $2 AND user_id = $3`,
         [energyUsed, id, userId]
       );
+    } else {
+      await pool.query(
+        `UPDATE devices
+         SET is_on = false
+         WHERE id = $1 AND user_id = $2`,
+        [id, userId]
+      );
     }
   }
 
@@ -51,3 +86,9 @@ async function toggleDevice(userId, id) {
 
   return devices;
 }
+
+module.exports = {
+  addDevice,
+  toggleDevice,
+  getDevices
+};
