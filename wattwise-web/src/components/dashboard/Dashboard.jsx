@@ -471,33 +471,38 @@ function FanCard({ device, onToggle }) {
       display: "flex", flexDirection: "column", cursor: "pointer",
     }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
-        <div style={{ position: "relative", width: 96, height: 96, display: "flex", alignItems: "center", justifyContent: "center", perspective: "1000px" }}>
-          {/* Spinning blades — stopped when off */}
-          <div
-            style={{
-              position: "relative",
-              width: 80, height: 80,
-              transformStyle: "preserve-3d",
-              animation: device.is_on ? "fan-spin 0.5s linear infinite" : "none",
-            }}
-          >
-            <div className="fan-blade" style={{ transform: "rotateZ(0deg) translate(8px, 0)" }} />
-            <div className="fan-blade" style={{ transform: "rotateZ(120deg) translate(8px, 0)" }} />
-            <div className="fan-blade" style={{ transform: "rotateZ(240deg) translate(8px, 0)" }} />
-          </div>
-          {/* Hub circle — absolutely centered, never spins */}
-          <div style={{
-            position: "absolute",
-            top: "50%", left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 24, height: 24,
-            background: "#cbd5e1",
-            borderRadius: "50%",
-            border: "2px solid white",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-            zIndex: 20,
-          }} />
-        </div>
+        <div
+  style={{
+    position: "relative",
+    width: 90,
+    height: 90,
+  }}
+>
+  {/* CENTER WRAPPER (handles positioning ONLY) */}
+  <div
+    style={{
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      width: 80,
+      height: 80,
+    }}
+  >
+    {/* ROTATING LAYER (handles animation ONLY) */}
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        animation: device.is_on ? "fan-spin 0.7s linear infinite" : "none",
+      }}
+    >
+        <div className="fan-blade" style={{ transform: "rotate(0deg)" }} />
+        <div className="fan-blade" style={{ transform: "rotate(120deg)" }} />
+        <div className="fan-blade" style={{ transform: "rotate(240deg)" }} />
+    </div>
+  </div>
+</div>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <div style={{ display: "flex", background: "rgba(255,255,255,0.4)", borderRadius: 8, padding: 4 }}>
             <button style={{ padding: "4px 8px", fontSize: 9, fontWeight: 700, color: "#065f46", background: "transparent", border: "none", cursor: "pointer" }}>LOW</button>

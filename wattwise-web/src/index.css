@@ -38,11 +38,16 @@
 }
 .fan-blade {
   position: absolute;
-  width: 60px;
-  height: 15px;
+  top: 50%;
+  left: 50%;
+
+  width: 55px;
+  height: 14px;
+
   background: linear-gradient(to right, #94a3b8, #cbd5e1);
   border-radius: 40% 10% 10% 40%;
-  transform-origin: left center;
+
+  transform-origin: 0% 50%;
 }
 
 /* ===== LAMP Animation ===== */
