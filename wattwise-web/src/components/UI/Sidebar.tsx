@@ -1,6 +1,13 @@
-import { UserButton } from "@clerk/clerk-react";
-import { Link, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+
 export default function Sidebar({ user }: { user: any }) {
+  const navItems = [
+    { icon: "dashboard", label: "Dashboard", path: "/" },
+    { icon: "devices", label: "Device Analytics", path: "/analytics" },
+    { icon: "history", label: "Energy Usage", path: "/usage" },
+    { icon: "settings", label: "Settings", path: "/settings" },
+  ];
+
   return (
     <aside
       className="ww-frosted"
@@ -55,39 +62,33 @@ export default function Sidebar({ user }: { user: any }) {
           gap: 4,
         }}
       >
-        {[
-          { icon: "dashboard", label: "Dashboard", active: true },
-          { icon: "devices", label: "Device Analytics" },
-          { icon: "history", label: "Energy Usage" },
-         
-          { icon: "settings", label: "Settings" },
-        ].map((item) => (
-          <a
+        {navItems.map((item) => (
+          <NavLink
             key={item.label}
-            href="#"
-            style={{
+            to={item.path}
+            style={({ isActive }) => ({
               display: "flex",
               alignItems: "center",
               gap: 16,
               padding: "14px 24px",
               borderRadius: "1rem",
-              background: item.active
+              background: isActive
                 ? "rgba(255,255,255,0.6)"
                 : "transparent",
-              color: item.active ? "#1e293b" : "#64748b",
-              fontWeight: item.active ? 700 : 500,
+              color: isActive ? "#1e293b" : "#64748b",
+              fontWeight: isActive ? 700 : 500,
               textDecoration: "none",
-            }}
+            })}
           >
             <span className="material-symbols-outlined">
               {item.icon}
             </span>
             <span>{item.label}</span>
-          </a>
+          </NavLink>
         ))}
       </nav>
 
-      {/* Footer User */}
+      {/* Footer */}
       <div style={{ padding: 24 }}>
         <div
           style={{
@@ -96,18 +97,7 @@ export default function Sidebar({ user }: { user: any }) {
             padding: 16,
             border: "1px solid rgba(255,255,255,0.2)",
           }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-            }}
-          >
-           
-          
-          </div>
-        </div>
+        />
       </div>
     </aside>
   );

@@ -1,13 +1,15 @@
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { Routes, Route, Navigate } from "react-router-dom";
+
 import Hero from "./components/Hero/Hero";
 import Dashboard from "./components/dashboard/Dashboard";
 import DeviceAnalytics from "./pages/DeviceAnalytics";
+import AppLayout from "./layout/AppLayout";
 
 export default function App() {
   return (
     <Routes>
-      {/* Public Route */}
+      {/* Public */}
       <Route
         path="/"
         element={
@@ -17,23 +19,16 @@ export default function App() {
             </SignedOut>
 
             <SignedIn>
-              <Dashboard />
+              <AppLayout />
             </SignedIn>
           </>
         }
-      />
+      >
+        {/* Nested protected routes */}
+        <Route index element={<Dashboard />} />
+        <Route path="analytics" element={<DeviceAnalytics />} />
+      </Route>
 
-      {/* Protected Analytics Route */}
-      <Route
-        path="/analytics"
-        element={
-          <SignedIn>
-            <DeviceAnalytics />
-          </SignedIn>
-        }
-      />
-
-      {/* Redirect unknown routes */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );

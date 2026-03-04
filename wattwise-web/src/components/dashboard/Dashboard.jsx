@@ -1311,7 +1311,6 @@ export default function Dashboard() {
       className="ww-bg"
       style={{ display: "flex", height: "100vh", overflow: "hidden" }}
     >
-     <Sidebar user={user} />
 
       {/* MAIN COLUMN */}
       <div
@@ -1323,128 +1322,7 @@ export default function Dashboard() {
           overflow: "hidden",
         }}
       >
-        {/* HEADER */}
-        <header
-          className="ww-header"
-          style={{
-            height: 80,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "0 40px",
-            position: "sticky",
-            top: 0,
-            zIndex: 10,
-          }}
-        >
-          <div style={{ flex: 1, maxWidth: 480, position: "relative" }}>
-            <span
-              className="material-symbols-outlined"
-              style={{
-                position: "absolute",
-                left: 16,
-                top: "50%",
-                transform: "translateY(-50%)",
-                color: "#38bdf8",
-                fontSize: 20,
-              }}
-            >
-              search
-            </span>
-            <input
-              style={{
-                width: "100%",
-                background: "rgba(255,255,255,0.6)",
-                border: "2px solid #e0f2fe",
-                borderRadius: "1rem",
-                paddingLeft: 48,
-                paddingRight: 16,
-                paddingTop: 12,
-                paddingBottom: 12,
-                fontSize: 14,
-                color: "#1e293b",
-                outline: "none",
-                boxSizing: "border-box",
-              }}
-              placeholder="Search devices or rooms..."
-            />
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-            <button
-              style={{
-                position: "relative",
-                width: 44,
-                height: 44,
-                borderRadius: "0.75rem",
-                background: "rgba(255,255,255,0.6)",
-                border: "1px solid rgba(255,255,255,0.2)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                color: "#475569",
-              }}
-            >
-              <span className="material-symbols-outlined">notifications</span>
-              <span
-                style={{
-                  position: "absolute",
-                  top: 10,
-                  right: 10,
-                  width: 10,
-                  height: 10,
-                  background: "#ee5b2b",
-                  border: "2px solid white",
-                  borderRadius: "50%",
-                }}
-              />
-            </button>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                paddingLeft: 20,
-                borderLeft: "1px solid rgba(255,255,255,0.4)",
-              }}
-            >
-              <div style={{ textAlign: "right" }}>
-                <p
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 700,
-                    color: "#1e293b",
-                    margin: 0,
-                  }}
-                >
-                  {user?.firstName} {user?.lastName}
-                </p>
-                <p
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 700,
-                    color: "#94a3b8",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.05em",
-                    margin: 0,
-                  }}
-                >
-                  Home Owner
-                </p>
-              </div>
-              <div
-                style={{
-                  borderRadius: "0.75rem",
-                  overflow: "hidden",
-                  border: "2px solid white",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-                }}
-              >
-                <UserButton afterSignOutUrl="/" />
-              </div>
-            </div>
-          </div>
-        </header>
+      
 
         {/* PAGE */}
         <main style={{ flex: 1, overflowY: "auto", padding: 40 }}>
