@@ -1,9 +1,6 @@
 // src/pages/DeviceAnalytics.jsx
 import React, { useState, useEffect, useRef } from "react";
 
-/* ─────────────────────────────────────────────
-   Device data
-───────────────────────────────────────────── */
 const DEVICES = [
   {
     name: "Smart Fan",
