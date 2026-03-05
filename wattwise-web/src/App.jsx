@@ -5,6 +5,7 @@ import Hero from "./components/Hero/Hero";
 import Dashboard from "./components/dashboard/Dashboard";
 import DeviceAnalytics from "./pages/DeviceAnalytics";
 import AppLayout from "./layout/AppLayout";
+import EnergyUsage from "./pages/EnergyUsage";
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
         {/* Nested protected routes */}
         <Route index element={<Dashboard />} />
         <Route path="analytics" element={<DeviceAnalytics />} />
+        <Route path="energy-usage" element={<EnergyUsage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" />} />

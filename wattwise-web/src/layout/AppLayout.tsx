@@ -11,7 +11,9 @@ export default function AppLayout() {
       className="ww-bg"
       style={{ display: "flex", height: "100vh", overflow: "hidden" }}
     >
-      <Sidebar user={user} />
+      <Sidebar user={user} open={false} onClose={function (): void {
+              throw new Error("Function not implemented.");
+          } } />
 
       {/* MAIN COLUMN */}
       <div
