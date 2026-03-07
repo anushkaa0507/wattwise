@@ -28,6 +28,9 @@ app.use(clerkMiddleware());
 
 /* ---------- ROUTES ---------- */
 app.use("/devices", deviceRoutes);
+const analyticsRoutes = require("./routes/deviceAnalyticsRoutes");
+
+app.use("/api/device-analytics", analyticsRoutes);
 
 /* ---------- SOCKET ---------- */
 initSocket(server);
@@ -52,3 +55,6 @@ pool.query("SELECT NOW()")
     console.error("DB failed:", err);
     process.exit(1);
   });
+  const analyticsRoutes = require("./routes/deviceAnalyticsRoutes");
+
+app.use("/api/device-analytics", analyticsRoutes);
