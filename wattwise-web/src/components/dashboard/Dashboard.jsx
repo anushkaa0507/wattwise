@@ -1305,14 +1305,11 @@ export default function Dashboard() {
     const token = await getToken();
     await toggleDevice(id, token);
   };
-
   return (
     <div
       className="ww-bg"
       style={{ display: "flex", height: "100vh", overflow: "hidden" }}
     >
-
-      {/* MAIN COLUMN */}
       <div
         style={{
           flex: 1,
@@ -1322,11 +1319,7 @@ export default function Dashboard() {
           overflow: "hidden",
         }}
       >
-      
-
-        {/* PAGE */}
-        <main style={{ flex: 1, overflowY: "auto", padding: 40 }}>
-          {/* Title */}
+              <main style={{ flex: 1, overflowY: "auto", padding: 40 }}>
           <div
             style={{
               display: "flex",
@@ -1399,9 +1392,7 @@ export default function Dashboard() {
               Add New Device
             </button>
           </div>
-
-          {/* Device grid */}
-          <div
+                    <div
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
@@ -1417,10 +1408,7 @@ export default function Dashboard() {
               />
             ))}
           </div>
-
-          {/* Bottom panels */}
           <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
-            {/* Energy Trend */}
             <div
               style={{
                 flex: 1,
@@ -1522,8 +1510,6 @@ export default function Dashboard() {
                 ))}
               </div>
             </div>
-
-            {/* Device Clusters */}
             <div
               style={{
                 width: 340,
@@ -1601,7 +1587,6 @@ export default function Dashboard() {
           </div>
         </main>
       </div>
-
       {showModal && (
         <AddDeviceModal onClose={() => setShowModal(false)} onAdd={handleAdd} />
       )}
