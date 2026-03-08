@@ -6,91 +6,10 @@ import {
   addDevice,
   toggleDevice,
 } from "../../../services/deviceApi";
-import Sidebar from "../UI/Sidebar";
+import "./dashboard.css";
 const BASE_URL = import.meta.env.VITE_API_URL;
 
-const GLOBAL_STYLES = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-  @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 
-  * { font-family: 'Inter', sans-serif; }
-
-  .ww-bg { background: linear-gradient(135deg, #e0f2fe 0%, #ede9fe 100%); }
-  .ww-frosted {
-    background: rgba(255,255,255,0.6);
-    backdrop-filter: blur(12px);
-    border-right: 1px solid rgba(255,255,255,0.3);
-  }
-  .ww-header {
-    background: rgba(255,255,255,0.4);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid rgba(255,255,255,0.3);
-  }
-
-  @keyframes fan-spin {
-    from { transform: rotateX(60deg) rotateZ(0deg); }
-    to   { transform: rotateX(60deg) rotateZ(360deg); }
-  }
-  .fan-blades { transform-style: preserve-3d; animation: fan-spin 2s linear infinite; }
-  .fan-blades-fast { animation: fan-spin 0.5s linear infinite !important; }
-  .fan-blade {
-    position: absolute;
-    width: 60px; height: 15px;
-    background: linear-gradient(to right, #94a3b8, #cbd5e1);
-    border-radius: 40% 10% 10% 40%;
-    transform-origin: left center;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-  }
-
-  @keyframes lamp-tilt {
-    0%,100% { transform: rotate(-5deg); }
-    50%      { transform: rotate(10deg); }
-  }
-  .lamp-head { transform-origin: bottom center; animation: lamp-tilt 4s ease-in-out infinite; }
-
-  @keyframes vent-move {
-    0%,100% { transform: rotateX(0deg); }
-    50%      { transform: rotateX(45deg); }
-  }
-  .ac-vent { animation: vent-move 3s ease-in-out infinite; transform-origin: top; }
-
-  @keyframes particle-flow {
-    0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
-    20%  { opacity: 0.4; }
-    100% { transform: translateY(40px) translateX(10px) scale(1.5); opacity: 0; }
-  }
-  .air-particle { animation: particle-flow 2s linear infinite; }
-
-  @keyframes pulse-stream {
-    0%,100% { transform: scale(1);   opacity: 1;   }
-    50%      { transform: scale(1.5); opacity: 0.4; }
-  }
-  .pulse-dot { animation: pulse-stream 1.5s ease-in-out infinite; }
-
-  .toggle-track {
-    position: relative; display: inline-flex; align-items: center;
-    width: 56px; height: 28px; border-radius: 9999px;
-    transition: background 0.2s; cursor: pointer;
-  }
-  .toggle-thumb {
-    position: absolute; top: 4px; left: 4px;
-    width: 20px; height: 20px; border-radius: 9999px;
-    background: white; transition: transform 0.2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-  }
-  .toggle-on .toggle-thumb { transform: translateX(28px); }
-
-  .device-card { transition: box-shadow 0.2s, transform 0.2s; }
-  .device-card:hover { transform: translateY(-2px); }
-`;
-
-function injectStyles() {
-  if (document.getElementById("ww-styles")) return;
-  const s = document.createElement("style");
-  s.id = "ww-styles";
-  s.textContent = GLOBAL_STYLES;
-  document.head.appendChild(s);
-}
 
 function detectType(name = "") {
   const n = name.toLowerCase();
@@ -510,7 +429,6 @@ function FanCard({ device, onToggle }) {
             height: 90,
           }}
         >
-          {/* CENTER WRAPPER (handles positioning ONLY) */}
           <div
             style={{
               position: "absolute",
@@ -521,7 +439,6 @@ function FanCard({ device, onToggle }) {
               height: 80,
             }}
           >
-            {/* ROTATING LAYER (handles animation ONLY) */}
             <div
               style={{
                 width: "100%",
@@ -1263,9 +1180,6 @@ export default function Dashboard() {
   const { user, isLoaded } = useUser();
   const [devices, setDevices] = useState([]);
   const [showModal, setShowModal] = useState(false);
-
-  injectStyles();
-
   useEffect(() => {
     const load = async () => {
       if (!isLoaded || !user) return;
@@ -1319,7 +1233,7 @@ export default function Dashboard() {
           overflow: "hidden",
         }}
       >
-              <main style={{ flex: 1, overflowY: "auto", padding: 40 }}>
+        <main style={{ flex: 1, overflowY: "auto", padding: 40 }}>
           <div
             style={{
               display: "flex",
@@ -1392,7 +1306,7 @@ export default function Dashboard() {
               Add New Device
             </button>
           </div>
-                    <div
+          <div
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
