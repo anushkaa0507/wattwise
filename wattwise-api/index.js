@@ -1,4 +1,3 @@
-
 require("dotenv").config();
 
 const express = require("express");
@@ -7,6 +6,7 @@ const cors = require("cors");
 const { clerkMiddleware } = require("@clerk/express");
 
 const deviceRoutes = require("./src/routes/deviceRoutes");
+// const analyticsRoutes = require("./routes/deviceAnalyticsRoutes");
 const pool = require("./src/config/db");
 const { initSocket } = require("./src/socket");
 
@@ -28,9 +28,7 @@ app.use(clerkMiddleware());
 
 /* ---------- ROUTES ---------- */
 app.use("/devices", deviceRoutes);
-const analyticsRoutes = require("./routes/deviceAnalyticsRoutes");
-
-app.use("/api/device-analytics", analyticsRoutes);
+// app.use("/api/device-analytics", analyticsRoutes);
 
 /* ---------- SOCKET ---------- */
 initSocket(server);
@@ -55,6 +53,3 @@ pool.query("SELECT NOW()")
     console.error("DB failed:", err);
     process.exit(1);
   });
-  const analyticsRoutes = require("./routes/deviceAnalyticsRoutes");
-
-app.use("/api/device-analytics", analyticsRoutes);
