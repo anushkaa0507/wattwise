@@ -1222,14 +1222,14 @@ export default function Dashboard() {
   return (
     <div
       className="ww-bg"
-      style={{ display: "flex", height: "100vh", overflow: "hidden" }}
+      style={{ display: "flex", height: "100dvh", overflow: "hidden" }}
     >
       <div
         style={{
           flex: 1,
           display: "flex",
           flexDirection: "column",
-          height: "100vh",
+          height: "100dvh",
           overflow: "hidden",
         }}
       >
