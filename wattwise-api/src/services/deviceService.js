@@ -1,9 +1,5 @@
 const pool = require("../config/db");
 const { getIO } = require("../socket");
-
-/**
- * Get devices
- */
 async function getDevices(userId) {
   const { rows } = await pool.query(
     `SELECT * FROM devices
@@ -13,10 +9,6 @@ async function getDevices(userId) {
   );
   return rows;
 }
-
-/**
- * Add device
- */
 async function addDevice(userId, name, watt) {
   const { rows } = await pool.query(
     `INSERT INTO devices (user_id, name, power_rating)
@@ -24,27 +16,17 @@ async function addDevice(userId, name, watt) {
      RETURNING *`,
     [userId, name, watt]
   );
-const newDevice = rows[0];
-
-const io = getIO();
-io.to(userId).emit("energy-update", newDevice);
-
-return newDevice;
-
-  return rows[0];
+  const newDevice = rows[0];
+  const io = getIO();
+  io.to(userId).emit("energy-update", newDevice);
+  return newDevice;
 }
-
-/**
- * Toggle device
- */
 async function toggleDevice(userId, id) {
   const { rows } = await pool.query(
     `SELECT * FROM devices WHERE id = $1 AND user_id = $2`,
     [id, userId]
   );
-
   if (!rows.length) return null;
-
   const device = rows[0];
 
   if (!device.is_on) {
@@ -82,19 +64,17 @@ async function toggleDevice(userId, id) {
     }
   }
 
-const { rows: updatedRows } = await pool.query(
-  `SELECT * FROM devices WHERE id = $1 AND user_id = $2`,
-  [id, userId]
-);
+  const { rows: updatedRows } = await pool.query(
+    `SELECT * FROM devices WHERE id = $1 AND user_id = $2`,
+    [id, userId]
+  );
 
-const updatedDevice = updatedRows[0];
+  const updatedDevice = updatedRows[0];
 
-const io = getIO();
-io.to(userId).emit("energy-update", updatedDevice);
+  const io = getIO();
+  io.to(userId).emit("energy-update", updatedDevice);
 
-return updatedDevice;
-
-  return devices;
+  return updatedDevice;
 }
 
 module.exports = {
