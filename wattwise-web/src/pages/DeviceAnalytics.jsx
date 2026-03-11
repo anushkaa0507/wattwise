@@ -496,7 +496,7 @@ export default function DeviceAnalytics() {
                 <span className="material-symbols-outlined" style={{ color: "#94a3b8", fontSize: 28 }}>add</span>
               </div>
               <h5 className="da-add-title">Add New Device</h5>
-              <p className="da-add-desc">Connect more smart appliances to expand your ecosystem</p>
+              <p className="da-add-desc">Connect more smart appliances to expand your ecosystem </p>
             </button>
           </div>
         </div>
