@@ -181,12 +181,38 @@ function generateBreakdown(type) {
 
 function generateInsight(name) {
   const insights = {
-    "Smart Fan": { text: <><b>Smart Fan</b> has been running <b>8 hours</b>. Eco Mode could save you</>, pct: "12%", sub: "on your weekly bill", btn: "Apply Eco-Schedules" },
-    "Desk Lamp": { text: <><b>Desk Lamp</b> is on standby. Schedule auto-off to save</>, pct: "18%", sub: "on your weekly bill", btn: "Schedule Auto-Off" },
-    "Living Room": { text: <><b>Living Room</b> light is offline. Check connection to recover</>, pct: "—", sub: "device unreachable", btn: "Check Connection" },
-    "Smart TV": { text: <><b>Smart TV</b> draws high power. Enabling sleep mode saves</>, pct: "22%", sub: "on your weekly bill", btn: "Enable Sleep Mode" },
-    "Fridge": { text: <><b>Fridge</b> is running optimally. Adjusting to 6°C saves</>, pct: "9%", sub: "on your weekly bill", btn: "Optimize Cooling" },
+    "Smart Fan": {
+      text: "Smart Fan has been running 8 hours. Eco Mode could save you",
+      pct: "12%",
+      sub: "on your weekly bill",
+      btn: "Apply Eco-Schedules"
+    },
+    "Desk Lamp": {
+      text: "Desk Lamp is on standby. Schedule auto-off to save",
+      pct: "18%",
+      sub: "on your weekly bill",
+      btn: "Schedule Auto-Off"
+    },
+    "Living Room": {
+      text: "Living Room light is offline. Check connection to recover",
+      pct: "—",
+      sub: "device unreachable",
+      btn: "Check Connection"
+    },
+    "Smart TV": {
+      text: "Smart TV draws high power. Enabling sleep mode saves",
+      pct: "22%",
+      sub: "on your weekly bill",
+      btn: "Enable Sleep Mode"
+    },
+    "Fridge": {
+      text: "Fridge is running optimally. Adjusting to 6°C saves",
+      pct: "9%",
+      sub: "on your weekly bill",
+      btn: "Optimize Cooling"
+    }
   };
+
   return insights[name] || insights["Smart Fan"];
 }
 module.exports = {
