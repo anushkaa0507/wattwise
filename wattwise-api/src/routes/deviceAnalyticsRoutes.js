@@ -1,10 +1,13 @@
 const express = require("express");
-const { getAnalyticsDevices, getDeviceDetail, getChartData } = require("../controllers/deviceAnalyticsController");
-
 const router = express.Router();
+const {
+  getDevices,
+  getDeviceAnalytics,
+  getDeviceChart
+} = require("../controllers/deviceAnalyticsController");
 
-router.get("/devices", getAnalyticsDevices);
-router.get("/:id", getDeviceDetail);
-router.get("/:id/chart", getChartData);
+router.get("/devices", getDevices);
+router.get("/:deviceId", getDeviceAnalytics);
+router.get("/:deviceId/chart", getDeviceChart);
 
 module.exports = router;

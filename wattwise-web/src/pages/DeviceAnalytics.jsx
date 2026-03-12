@@ -1,14 +1,8 @@
-// src/pages/DeviceAnalytics.jsx
 import React, { useState, useEffect, useRef } from "react";
-import { useAuth } from "@clerk/clerk-react";  // ← NEW: For token
+import { useAuth } from "@clerk/clerk-react";  
 import "./DeviceAnalytics.css";
-
-const BASE_URL = import.meta.env.VITE_API_URL;  // ← NEW: Your API base
-
-/* ─────────────────────────────────────────────
-   Static fallbacks (unchanged—used if API fails)
-───────────────────────────────────────────── */
-const STATIC_DEVICES = [  // ← Renamed from DEVICES
+const BASE_URL = import.meta.env.VITE_API_URL; 
+const STATIC_DEVICES = [  
   {
     name: "Smart Fan",
     icon: "cyclone",
