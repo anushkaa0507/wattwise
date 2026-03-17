@@ -17,6 +17,7 @@ app.get("/", (req, res) => {
   res.send("WattWise API is running ⚡");
 });
 
+
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
