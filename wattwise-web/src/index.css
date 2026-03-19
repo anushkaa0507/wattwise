@@ -1,7 +1,9 @@
 @import "tailwindcss";
  
 @tailwind utilities;
-
+html, body {
+  overflow-x: clip;
+}
 /* ===== Custom Pastel Colors ===== */
 .bg-mint { background: #dcfce7; }
 .bg-pale-yellow { background: #fef9c3; }

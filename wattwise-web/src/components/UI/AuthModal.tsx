@@ -23,7 +23,6 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
         max-h-[95vh]
         bg-white
         rounded-3xl
-        overflow-hidden
         shadow-2xl
         flex
         flex-col
@@ -63,7 +62,6 @@ export default function AuthModal({ open, onClose }: AuthModalProps) {
           p-6
           sm:p-10
           lg:p-12
-          overflow-y-auto
           bg-white
         "
         >
