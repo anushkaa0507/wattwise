@@ -2,7 +2,8 @@
  
 @tailwind utilities;
 html, body {
-  overflow-x: clip;
+  overflow-x: hidden;   /* still prevents unwanted horizontal scrollbar from the marquee */
+  overflow-y: auto;     /* this forces normal vertical scrolling */
 }
 /* ===== Custom Pastel Colors ===== */
 .bg-mint { background: #dcfce7; }

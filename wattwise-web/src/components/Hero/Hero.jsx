@@ -22,10 +22,30 @@ export function Header({ openAuth }) {
           </span>
         </div>
         <div className="hidden md:flex items-center gap-8 text-sm font-medium">
-          <a className=" text-[1rem] hover:bg-[var(--color-mint)] transition-colors" href="#">Features</a>
-          <a className=" text-[1rem] hover:bg-[var(--color-mint)] transition-colors" href="#">Dashboard</a>
-          <a className=" text-[1rem] hover:bg-[var(--color-mint)] transition-colors" href="#">Pricing</a>
-          <a className=" text-[1rem] hover:bg-[var(--color-mint)] transition-colors" href="#">About</a>
+          <a
+            className=" text-[1rem] hover:bg-[var(--color-mint)] transition-colors"
+            href="#"
+          >
+            Features
+          </a>
+          <a
+            className=" text-[1rem] hover:bg-[var(--color-mint)] transition-colors"
+            href="#"
+          >
+            Dashboard
+          </a>
+          <a
+            className=" text-[1rem] hover:bg-[var(--color-mint)] transition-colors"
+            href="#"
+          >
+            Pricing
+          </a>
+          <a
+            className=" text-[1rem] hover:bg-[var(--color-mint)] transition-colors"
+            href="#"
+          >
+            About
+          </a>
         </div>
         <div className="flex items-center gap-4">
           <button
@@ -44,7 +64,6 @@ export function Header({ openAuth }) {
 }
 
 export default function Hero() {
-  // ── Row 1: solar / smart-home / EV focus ──────────────────────────────────
   const galleryRow1 = [
     {
       title: "Solar Integration",
@@ -89,8 +108,6 @@ export default function Hero() {
       tag: "🌡️ Climate",
     },
   ];
-
-  // ── Row 2: analytics / grid / home automation ──────────────────────────────
   const galleryRow2 = [
     {
       title: "Energy Analytics",
@@ -135,23 +152,36 @@ export default function Hero() {
       tag: "🌿 Green",
     },
   ];
-
   const extendedRow1 = [...galleryRow1, ...galleryRow1];
   const extendedRow2 = [...galleryRow2, ...galleryRow2];
-
   const [authOpen, setAuthOpen] = useState(false);
   const [devices, setDevices] = useState([
-    { name: "Living Room AC", color: "bg-[var(--baby-blue)]", icon: "ac_unit", on: true },
-    { name: "Kitchen Hub", color: "bg-[var(--mint-green)]", icon: "lightbulb", on: true },
-    { name: "Smart Oven", color: "bg-[var(--pale-yellow)]", icon: "oven", on: true },
+    {
+      name: "Living Room AC",
+      color: "bg-[var(--baby-blue)]",
+      icon: "ac_unit",
+      on: true,
+    },
+    {
+      name: "Kitchen Hub",
+      color: "bg-[var(--mint-green)]",
+      icon: "lightbulb",
+      on: true,
+    },
+    {
+      name: "Smart Oven",
+      color: "bg-[var(--pale-yellow)]",
+      icon: "oven",
+      on: true,
+    },
   ]);
-
   const toggleDevice = (index) => {
     setDevices((prev) =>
-      prev.map((device, i) => (i === index ? { ...device, on: !device.on } : device))
+      prev.map((device, i) =>
+        i === index ? { ...device, on: !device.on } : device,
+      ),
     );
   };
-
   return (
     <div className="font-display bg-pastel-gradient text-slate-800 min-h-screen">
       <Header openAuth={() => setAuthOpen(true)} />
@@ -184,7 +214,8 @@ export default function Hero() {
           </div>
 
           <h1 className="text-5xl md:text-7xl font-extrabold text-[var(--color-navy)] leading-[1.1]">
-            {" "}Master Your <span className="text-primary">Energy</span> Consumption
+            {" "}
+            Master Your <span className="text-primary">Energy</span> Consumption
           </h1>
 
           <p className="text-lg md:text-xl text-slate-500 text-slate-400 max-w-2xl p-6">
@@ -210,8 +241,12 @@ export default function Hero() {
             <div className="bg-white/70 backdrop-blur-2xl border border-white/80 rounded-[3rem] p-6 md:p-10 dashboard-glow">
               <div className="flex justify-between items-center mb-10">
                 <div className="text-left">
-                  <h3 className="text-2xl font-bold text-[#1e293b]">Energy Overview</h3>
-                  <p className="text-sm text-slate-500">All systems operational • Live Update</p>
+                  <h3 className="text-2xl font-bold text-[#1e293b]">
+                    Energy Overview
+                  </h3>
+                  <p className="text-sm text-slate-500">
+                    All systems operational • Live Update
+                  </p>
                 </div>
                 <div className="bg-blue-50 text-blue-500 border border-blue-100 px-5 py-2 rounded-xl text-sm font-bold">
                   ⚡ 1.28 kW
@@ -226,32 +261,44 @@ export default function Hero() {
                       className={`
                         ${item.color}
                         relative overflow-hidden p-5 rounded-2xl flex items-center justify-between transition-all duration-500 ease-out
-                        ${item.on
-                          ? "shadow-[0_10px_30px_rgba(59,130,246,0.35)] scale-[1.02] brightness-100 border-white/60"
-                          : "opacity-50 grayscale scale-[0.98] shadow-none border-white/20"
+                        ${
+                          item.on
+                            ? "shadow-[0_10px_30px_rgba(59,130,246,0.35)] scale-[1.02] brightness-100 border-white/60"
+                            : "opacity-50 grayscale scale-[0.98] shadow-none border-white/20"
                         }
                       `}
                     >
                       <div
                         className={`absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-500 ${item.on ? "opacity-100" : "opacity-0"}`}
-                        style={{ background: "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.6), transparent 60%)" }}
+                        style={{
+                          background:
+                            "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.6), transparent 60%)",
+                        }}
                       />
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-xl bg-white/80 flex items-center justify-center">
-                          <span className="material-symbols-outlined">{item.icon}</span>
+                          <span className="material-symbols-outlined">
+                            {item.icon}
+                          </span>
                         </div>
                         <div>
-                          <div className={`text-sm font-bold transition-colors duration-500 ${item.on ? "text-[#1e293b]" : "text-slate-400"}`}>
+                          <div
+                            className={`text-sm font-bold transition-colors duration-500 ${item.on ? "text-[#1e293b]" : "text-slate-400"}`}
+                          >
                             {item.name}
                           </div>
-                          <div className="text-xs text-slate-500">{item.on ? "Active" : "Off"}</div>
+                          <div className="text-xs text-slate-500">
+                            {item.on ? "Active" : "Off"}
+                          </div>
                         </div>
                       </div>
                       <div
                         onClick={() => toggleDevice(i)}
                         className={`w-12 h-6 rounded-full relative p-1 cursor-pointer transition-all duration-300 ${item.on ? "bg-gradient-to-r from-blue-400 to-emerald-400" : "bg-gray-300"}`}
                       >
-                        <div className={`w-4 h-4 bg-white rounded-full shadow transition-transform duration-300 ${item.on ? "translate-x-6" : "translate-x-0"}`} />
+                        <div
+                          className={`w-4 h-4 bg-white rounded-full shadow transition-transform duration-300 ${item.on ? "translate-x-6" : "translate-x-0"}`}
+                        />
                       </div>
                     </div>
                   ))}
@@ -282,9 +329,7 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* ── Enhanced Dual-Row Sliding Gallery ─────────────────────────── */}
-          <div className="w-full max-w-none -mx-6 overflow-hidden py-16 relative">
-            {/* Section label */}
+          <div className="w-screen left-1/2 -translate-x-1/2 overflow-hidden py-16 relative">
             <div className="max-w-7xl mx-auto px-6 mb-8 flex items-center gap-4">
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
               <span className="text-xs font-bold tracking-[0.2em] uppercase text-slate-400 whitespace-nowrap">
@@ -293,11 +338,9 @@ export default function Hero() {
               <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
             </div>
 
-            {/* Edge fade masks */}
             <div className="absolute inset-y-0 left-0 w-24 md:w-40 bg-gradient-to-r from-white/90 to-transparent z-10 pointer-events-none" />
             <div className="absolute inset-y-0 right-0 w-24 md:w-40 bg-gradient-to-l from-white/90 to-transparent z-10 pointer-events-none" />
 
-            {/* Row 1 — scrolls LEFT */}
             <div className="overflow-hidden mb-4">
               <motion.div
                 className="flex w-max gap-4"
@@ -311,7 +354,6 @@ export default function Hero() {
               </motion.div>
             </div>
 
-            {/* Row 2 — scrolls RIGHT (opposite direction) */}
             <div className="overflow-hidden">
               <motion.div
                 className="flex w-max gap-4"
@@ -332,27 +374,43 @@ export default function Hero() {
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center justify-items-center opacity-50 grayscale hover:grayscale-0 transition-all">
             <div className="flex flex-col items-center gap-2">
               <span className="material-icons text-3xl">solar_power</span>
-              <span className="text-[10px] font-bold tracking-widest uppercase">Solar Grid</span>
+              <span className="text-[10px] font-bold tracking-widest uppercase">
+                Solar Grid
+              </span>
             </div>
             <div className="flex flex-col items-center gap-2">
               <span className="material-icons text-3xl">outlet</span>
-              <span className="text-[10px] font-bold tracking-widest uppercase">Smart Plug</span>
+              <span className="text-[10px] font-bold tracking-widest uppercase">
+                Smart Plug
+              </span>
             </div>
             <div className="flex flex-col items-center gap-2">
               <span className="material-icons text-3xl">home_max</span>
-              <span className="text-[10px] font-bold tracking-widest uppercase">Automation</span>
+              <span className="text-[10px] font-bold tracking-widest uppercase">
+                Automation
+              </span>
             </div>
             <div className="flex flex-col items-center gap-2">
-              <span className="material-icons text-3xl">battery_charging_full</span>
-              <span className="text-[10px] font-bold tracking-widest uppercase">Storage</span>
+              <span className="material-icons text-3xl">
+                battery_charging_full
+              </span>
+              <span className="text-[10px] font-bold tracking-widest uppercase">
+                Storage
+              </span>
             </div>
             <div className="flex flex-col items-center gap-2">
-              <span className="material-icons text-3xl">settings_input_component</span>
-              <span className="text-[10px] font-bold tracking-widest uppercase">Connectors</span>
+              <span className="material-icons text-3xl">
+                settings_input_component
+              </span>
+              <span className="text-[10px] font-bold tracking-widest uppercase">
+                Connectors
+              </span>
             </div>
             <div className="flex flex-col items-center gap-2">
               <span className="material-icons text-3xl">analytics</span>
-              <span className="text-[10px] font-bold tracking-widest uppercase">Big Data</span>
+              <span className="text-[10px] font-bold tracking-widest uppercase">
+                Big Data
+              </span>
             </div>
           </div>
           <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
@@ -376,7 +434,9 @@ function GalleryCard({ item, tall = false }) {
         loading="lazy"
       />
 
-      <div className={`absolute inset-0 bg-gradient-to-t ${item.accent} opacity-40 group-hover:opacity-60 transition-opacity duration-500`} />
+      <div
+        className={`absolute inset-0 bg-gradient-to-t ${item.accent} opacity-40 group-hover:opacity-60 transition-opacity duration-500`}
+      />
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
       <div className="absolute top-3 left-3">
         <span className="bg-white/20 backdrop-blur-md border border-white/30 text-white text-[10px] font-bold px-2.5 py-1 rounded-full tracking-wide">
@@ -385,13 +445,19 @@ function GalleryCard({ item, tall = false }) {
       </div>
 
       <div className="absolute inset-x-0 bottom-0 p-5 translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
-        <h4 className="font-bold text-base text-white leading-tight">{item.title}</h4>
+        <h4 className="font-bold text-base text-white leading-tight">
+          {item.title}
+        </h4>
         <p className="text-xs text-slate-300 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75">
           {item.description}
         </p>
       </div>
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-        style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 50%)" }}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 50%)",
+        }}
       />
     </div>
   );
