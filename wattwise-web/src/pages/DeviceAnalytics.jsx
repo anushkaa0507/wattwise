@@ -670,8 +670,6 @@ export default function DeviceAnalytics() {
                 </div>
               ))}
             </div>
-
-            {/* Smart Insight — changes per device */}
             <div style={{
               borderRadius:28, padding:32, color:"#fff",
               background: COLOR,
